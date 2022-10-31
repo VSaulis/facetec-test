@@ -27,6 +27,13 @@ class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
   ) {
     this.promise = promise
 
+    Log.d("status", FaceTecSDK.getStatus(this.reactApplicationContext).toString());
+    Log.d("facetecversion", FaceTecSDK.version());
+    Log.d("productionKeyText", productionKeyText);
+    Log.d("deviceKeyIdentifier", deviceKeyIdentifier);
+    Log.d("faceScanEncryptionKey", faceScanEncryptionKey);
+    Log.d("sessionToken", sessionToken);
+
     FaceTecSDK.initializeInProductionMode(
       this.reactApplicationContext,
       productionKeyText,
@@ -42,6 +49,7 @@ class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
   ): FaceTecSDK.InitializeCallback {
     return object : FaceTecSDK.InitializeCallback() {
       override fun onCompletion(isSuccess: Boolean) {
+        Log.d("isSuccess", isSuccess.toString());
         FaceTecSessionActivity.createAndLaunchSession(
           context,
           ::onInitialized,
@@ -55,7 +63,7 @@ class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     result: FaceTecSessionResult,
     callback: FaceTecFaceScanResultCallback
   ) {
+    Log.d("initialized", "facetec initialized");
     Log.d("React native", result.toString())
-    this.promise.resolve(result.status.toString())
   }
 }

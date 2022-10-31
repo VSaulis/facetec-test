@@ -3,25 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		79904CC328A11A510050EDEE /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79904CC228A11A510050EDEE /* FaceTecSDK.framework */; };
-		79904CC528A11A7A0050EDEE /* LivenessCheckProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79904CC428A11A7A0050EDEE /* LivenessCheckProcessor.swift */; };
-		79904CC728A11A830050EDEE /* FacetecService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79904CC628A11A830050EDEE /* FacetecService.swift */; };
-		E907597828AFAA7500DD2E4F /* OndatoCameraElementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907596B28AFAA7400DD2E4F /* OndatoCameraElementsView.swift */; };
-		E907597928AFAA7500DD2E4F /* OndatoLivenessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907596C28AFAA7400DD2E4F /* OndatoLivenessViewController.swift */; };
-		E907597B28AFAA7500DD2E4F /* OndatoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907596E28AFAA7400DD2E4F /* OndatoButton.swift */; };
-		E907597D28AFAA7500DD2E4F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597028AFAA7400DD2E4F /* UIView.swift */; };
-		E907597E28AFAA7500DD2E4F /* OndatoLivenessCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597128AFAA7400DD2E4F /* OndatoLivenessCaptureView.swift */; };
-		E907597F28AFAA7500DD2E4F /* OndatoCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597228AFAA7400DD2E4F /* OndatoCameraController.swift */; };
-		E907598028AFAA7500DD2E4F /* OndatoEmptyLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597328AFAA7400DD2E4F /* OndatoEmptyLoadingView.swift */; };
-		E907598128AFAA7500DD2E4F /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597428AFAA7400DD2E4F /* String.swift */; };
-		E907598228AFAA7500DD2E4F /* OndatoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597528AFAA7400DD2E4F /* OndatoLoadingView.swift */; };
-		E907598328AFAA7500DD2E4F /* OndatoPaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597628AFAA7400DD2E4F /* OndatoPaddedLabel.swift */; };
-		E907598428AFAA7500DD2E4F /* OndatoProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E907597728AFAA7400DD2E4F /* OndatoProgressView.swift */; };
-		F4FF95D7245B92E800C19C63 /* Facetec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* Facetec.swift */; };
+		03A2EA8E2902130F005818CD /* FaceTecViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */; };
+		03A2EA8F2902130F005818CD /* FaceTecViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A2EA8D2902130F005818CD /* FaceTecViewManager.m */; };
+		03F8813F2902A116005C68CE /* FaceTecSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,24 +25,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libFacetec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFacetec.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		79904CC228A11A510050EDEE /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
-		79904CC428A11A7A0050EDEE /* LivenessCheckProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LivenessCheckProcessor.swift; sourceTree = "<group>"; };
-		79904CC628A11A830050EDEE /* FacetecService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecService.swift; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* Facetec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facetec.m; sourceTree = "<group>"; };
-		E907596B28AFAA7400DD2E4F /* OndatoCameraElementsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoCameraElementsView.swift; sourceTree = "<group>"; };
-		E907596C28AFAA7400DD2E4F /* OndatoLivenessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoLivenessViewController.swift; sourceTree = "<group>"; };
-		E907596E28AFAA7400DD2E4F /* OndatoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoButton.swift; sourceTree = "<group>"; };
-		E907597028AFAA7400DD2E4F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
-		E907597128AFAA7400DD2E4F /* OndatoLivenessCaptureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoLivenessCaptureView.swift; sourceTree = "<group>"; };
-		E907597228AFAA7400DD2E4F /* OndatoCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoCameraController.swift; sourceTree = "<group>"; };
-		E907597328AFAA7400DD2E4F /* OndatoEmptyLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoEmptyLoadingView.swift; sourceTree = "<group>"; };
-		E907597428AFAA7400DD2E4F /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		E907597528AFAA7400DD2E4F /* OndatoLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoLoadingView.swift; sourceTree = "<group>"; };
-		E907597628AFAA7400DD2E4F /* OndatoPaddedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoPaddedLabel.swift; sourceTree = "<group>"; };
-		E907597728AFAA7400DD2E4F /* OndatoProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OndatoProgressView.swift; sourceTree = "<group>"; };
-		F4FF95D5245B92E700C19C63 /* Facetec-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Facetec-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* Facetec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Facetec.swift; sourceTree = "<group>"; };
+		03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceTecViewManager.swift; sourceTree = "<group>"; };
+		03A2EA8D2902130F005818CD /* FaceTecViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceTecViewManager.m; sourceTree = "<group>"; };
+		03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FaceTecSDK.xcframework; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libFaceTec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFaceTec.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4FF95D5245B92E700C19C63 /* FaceTec-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FaceTec-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,17 +37,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79904CC328A11A510050EDEE /* FaceTecSDK.framework in Frameworks */,
+				03F8813F2902A116005C68CE /* FaceTecSDK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03815D93290286BC00E92E4F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */,
+			);
+			path = Frameworks;
+			sourceTree = "<group>";
+		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libFacetec.a */,
+				134814201AA4EA6300B7C361 /* libFaceTec.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,49 +63,20 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				E907598528AFAA7B00DD2E4F /* Active */,
-				E907598628AFAA8100DD2E4F /* Passive */,
-				B3E7B5891CC2AC0600A0062D /* Facetec.m */,
-				F4FF95D6245B92E800C19C63 /* Facetec.swift */,
-				F4FF95D5245B92E700C19C63 /* Facetec-Bridging-Header.h */,
+				03815D93290286BC00E92E4F /* Frameworks */,
+				03A2EA8D2902130F005818CD /* FaceTecViewManager.m */,
+				03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */,
+				F4FF95D5245B92E700C19C63 /* FaceTec-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		E907598528AFAA7B00DD2E4F /* Active */ = {
-			isa = PBXGroup;
-			children = (
-				79904CC428A11A7A0050EDEE /* LivenessCheckProcessor.swift */,
-				79904CC628A11A830050EDEE /* FacetecService.swift */,
-				79904CC228A11A510050EDEE /* FaceTecSDK.framework */,
-			);
-			path = Active;
-			sourceTree = "<group>";
-		};
-		E907598628AFAA8100DD2E4F /* Passive */ = {
-			isa = PBXGroup;
-			children = (
-				E907596E28AFAA7400DD2E4F /* OndatoButton.swift */,
-				E907597228AFAA7400DD2E4F /* OndatoCameraController.swift */,
-				E907596B28AFAA7400DD2E4F /* OndatoCameraElementsView.swift */,
-				E907597328AFAA7400DD2E4F /* OndatoEmptyLoadingView.swift */,
-				E907597128AFAA7400DD2E4F /* OndatoLivenessCaptureView.swift */,
-				E907596C28AFAA7400DD2E4F /* OndatoLivenessViewController.swift */,
-				E907597528AFAA7400DD2E4F /* OndatoLoadingView.swift */,
-				E907597628AFAA7400DD2E4F /* OndatoPaddedLabel.swift */,
-				E907597728AFAA7400DD2E4F /* OndatoProgressView.swift */,
-				E907597428AFAA7400DD2E4F /* String.swift */,
-				E907597028AFAA7400DD2E4F /* UIView.swift */,
-			);
-			path = Passive;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* Facetec */ = {
+		58B511DA1A9E6C8500147676 /* FaceTec */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Facetec" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "FaceTec" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -132,9 +86,9 @@
 			);
 			dependencies = (
 			);
-			name = Facetec;
+			name = FaceTec;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libFacetec.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libFaceTec.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -151,7 +105,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Facetec" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "FaceTec" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -164,7 +118,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* Facetec */,
+				58B511DA1A9E6C8500147676 /* FaceTec */,
 			);
 		};
 /* End PBXProject section */
@@ -174,20 +128,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E907597928AFAA7500DD2E4F /* OndatoLivenessViewController.swift in Sources */,
-				E907598128AFAA7500DD2E4F /* String.swift in Sources */,
-				E907598228AFAA7500DD2E4F /* OndatoLoadingView.swift in Sources */,
-				79904CC728A11A830050EDEE /* FacetecService.swift in Sources */,
-				79904CC528A11A7A0050EDEE /* LivenessCheckProcessor.swift in Sources */,
-				E907597F28AFAA7500DD2E4F /* OndatoCameraController.swift in Sources */,
-				E907597E28AFAA7500DD2E4F /* OndatoLivenessCaptureView.swift in Sources */,
-				E907598428AFAA7500DD2E4F /* OndatoProgressView.swift in Sources */,
-				F4FF95D7245B92E800C19C63 /* Facetec.swift in Sources */,
-				E907598028AFAA7500DD2E4F /* OndatoEmptyLoadingView.swift in Sources */,
-				E907598328AFAA7500DD2E4F /* OndatoPaddedLabel.swift in Sources */,
-				E907597B28AFAA7500DD2E4F /* OndatoButton.swift in Sources */,
-				E907597D28AFAA7500DD2E4F /* UIView.swift in Sources */,
-				E907597828AFAA7500DD2E4F /* OndatoCameraElementsView.swift in Sources */,
+				03A2EA8F2902130F005818CD /* FaceTecViewManager.m in Sources */,
+				03A2EA8E2902130F005818CD /* FaceTecViewManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +164,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -237,7 +180,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -272,6 +215,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -280,7 +224,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -292,7 +236,9 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/../node_modules/react-native-facetec/ios/Frameworks",
+					"$(PROJECT_DIR)/../ios/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -300,9 +246,10 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = Facetec;
+				PRODUCT_NAME = FaceTec;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Facetec-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -315,7 +262,9 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/../node_modules/react-native-facetec/ios/Frameworks",
+					"$(PROJECT_DIR)/../ios/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -323,9 +272,10 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = Facetec;
+				PRODUCT_NAME = FaceTec;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Facetec-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -335,7 +285,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Facetec" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "FaceTec" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -344,7 +294,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Facetec" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "FaceTec" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,
