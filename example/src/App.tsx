@@ -1,13 +1,20 @@
-import React, { FC } from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import { FacetecConfig, initialize } from 'react-native-facetec';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Pressable, Text, Dimensions } from 'react-native';
+import {
+  FacetecViewConfig,
+  FacetecView,
+  FacetecState,
+} from 'react-native-facetec';
+
+const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 
 const productionKeyText =
-  "appId      = *\n" +
-  "expiryDate = 2022-09-10\n" +
-  "key        = 003046022100cfbc723dcdf7deb47114fe76b1855c9d065cbfdacc5f0da60d16093a7535ab6a02210085fb25a20e0638ddd1b1a1ae1c53e485812c7ace466c07d59041e2a1aa145e5f\n";
+  'appId      = *\n' +
+  'expiryDate = 2022-09-10\n' +
+  'key        = 003046022100cfbc723dcdf7deb47114fe76b1855c9d065cbfdacc5f0da60d16093a7535ab6a02210085fb25a20e0638ddd1b1a1ae1c53e485812c7ace466c07d59041e2a1aa145e5f\n';
 
-const config: FacetecConfig = {
+const PROD_CONFIGURATION: FacetecViewConfig = {
   productionKeyText,
   deviceKeyIdentifier: 'dMV5Lvfy6LFjIQKBREZ5X3Od2RjjxMzd',
   faceScanEncryptionKey:
@@ -20,30 +27,88 @@ const config: FacetecConfig = {
     'BYs3JMEbdJBgcCEPUG/wA5hBnXzYNI3zMALmjsb9oG2R10g+zjWSzw2bdyJ7HB32\n' +
     'rQIDAQAB\n' +
     '-----END PUBLIC KEY-----',
-  sessionToken: '8xY9v1ouXNnFFAu4V8NuqQjexvMwkyrQLkcg9icCNWNxSHN5ym32bwu',
+  baseURL: 'https://api.facetec.com',
 };
 
-const App: FC = () => {
+// In order to use the SDK in a development environment, you have to at least set the
+// deviceKeyIdentifier
+const DEV_CONFIGURATION: FacetecViewConfig = {
+  deviceKeyIdentifier: 'dGMHvdR1eaWK6OemnyuVWS3h77cQd6Ag',
+};
 
-  const start = () => {
-    console.log('config', config);
-    initialize(config).then(console.log).catch(console.error);
-  }
+export default function App() {
+  const [show, setShow] = useState(false);
+  const [state, setState] = useState<FacetecState>();
+
+  useEffect(() => {
+    const { status, load } = state || {};
+
+    if (status) {
+      switch (status) {
+        case 'Succeeded':
+          // do something
+          console.log('Succeeded');
+          console.log(load?.lowQualityAuditTrailImagesBase64?.[0]);
+          setShow(false);
+          break;
+        case 'Failed':
+          // do something
+          console.log('Failed');
+          setShow(false);
+          break;
+        case 'Cancelled':
+          // do something
+          console.log('Cancelled');
+          setShow(false);
+          break;
+        default:
+          console.log(JSON.stringify(state, null, 2));
+          // do something
+          break;
+      }
+    }
+  }, [state]);
 
   return (
     <View style={styles.container}>
-      <Button title="Start" onPress={start}/>
-      <Text>I am running</Text>
+      <Pressable
+        style={styles.button}
+        onPress={() => {
+          console.log('show');
+          setShow(!show);
+        }}
+        disabled={show}
+      >
+        <Text style={styles.buttonText}>Start</Text>
+      </Pressable>
+      <FacetecView
+        vocalGuidanceMode="off"
+        onStateUpdate={setState}
+        mode="enroll"
+        show={show}
+        config={DEV_CONFIGURATION}
+      />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  button: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginVertical: 20,
+    backgroundColor: 'orange',
+    borderRadius: 10,
+    padding: 15,
+  },
+  buttonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
-
-export default App;

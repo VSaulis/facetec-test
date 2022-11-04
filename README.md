@@ -18,14 +18,14 @@ const config: FacetecConfig = {
   key: '',
   deviceKeyIdentifier: '',
   token: '',
-  publicFaceScanEncryptionKey: "",
+  publicFaceScanEncryptionKey: '',
 };
 
 const App: FC = () => {
   useEffect(() => {
     initialize(config).then(console.log);
   }, []);
-}
+};
 ```
 
 ## Contributing
