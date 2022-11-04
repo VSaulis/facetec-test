@@ -3,13 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03A2EA8E2902130F005818CD /* FaceTecViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */; };
-		03A2EA8F2902130F005818CD /* FaceTecViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A2EA8D2902130F005818CD /* FaceTecViewManager.m */; };
-		03F8813F2902A116005C68CE /* FaceTecSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */; };
+		E907599328B759AF00DD2E4F /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79904CC228A11A510050EDEE /* FaceTecSDK.framework */; };
+		F4FF95D7245B92E800C19C63 /* Facetec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* Facetec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,11 +24,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceTecViewManager.swift; sourceTree = "<group>"; };
-		03A2EA8D2902130F005818CD /* FaceTecViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceTecViewManager.m; sourceTree = "<group>"; };
-		03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FaceTecSDK.xcframework; sourceTree = "<group>"; };
-		134814201AA4EA6300B7C361 /* libFaceTec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFaceTec.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4FF95D5245B92E700C19C63 /* FaceTec-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FaceTec-Bridging-Header.h"; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libFacetec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFacetec.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		79904CC228A11A510050EDEE /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* Facetec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facetec.m; sourceTree = "<group>"; };
+		F4FF95D5245B92E700C19C63 /* Facetec-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Facetec-Bridging-Header.h"; sourceTree = "<group>"; };
+		F4FF95D6245B92E800C19C63 /* Facetec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Facetec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,25 +36,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03F8813F2902A116005C68CE /* FaceTecSDK.xcframework in Frameworks */,
+				E907599328B759AF00DD2E4F /* FaceTecSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		03815D93290286BC00E92E4F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				03F8813E2902A116005C68CE /* FaceTecSDK.xcframework */,
-			);
-			path = Frameworks;
-			sourceTree = "<group>";
-		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libFaceTec.a */,
+				134814201AA4EA6300B7C361 /* libFacetec.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,20 +54,28 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				03815D93290286BC00E92E4F /* Frameworks */,
-				03A2EA8D2902130F005818CD /* FaceTecViewManager.m */,
-				03A2EA8C2902130F005818CD /* FaceTecViewManager.swift */,
-				F4FF95D5245B92E700C19C63 /* FaceTec-Bridging-Header.h */,
+				E907598528AFAA7B00DD2E4F /* Active */,
+				B3E7B5891CC2AC0600A0062D /* Facetec.m */,
+				F4FF95D6245B92E800C19C63 /* Facetec.swift */,
+				F4FF95D5245B92E700C19C63 /* Facetec-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		E907598528AFAA7B00DD2E4F /* Active */ = {
+			isa = PBXGroup;
+			children = (
+				79904CC228A11A510050EDEE /* FaceTecSDK.framework */,
+			);
+			path = Active;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* FaceTec */ = {
+		58B511DA1A9E6C8500147676 /* Facetec */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "FaceTec" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Facetec" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -86,9 +85,9 @@
 			);
 			dependencies = (
 			);
-			name = FaceTec;
+			name = Facetec;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libFaceTec.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libFacetec.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -105,7 +104,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "FaceTec" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Facetec" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -118,7 +117,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* FaceTec */,
+				58B511DA1A9E6C8500147676 /* Facetec */,
 			);
 		};
 /* End PBXProject section */
@@ -128,8 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03A2EA8F2902130F005818CD /* FaceTecViewManager.m in Sources */,
-				03A2EA8E2902130F005818CD /* FaceTecViewManager.swift in Sources */,
+				F4FF95D7245B92E800C19C63 /* Facetec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +162,6 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -180,7 +177,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -215,7 +212,6 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -224,7 +220,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -236,9 +232,8 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-					"$(PROJECT_DIR)/../node_modules/react-native-facetec/ios/Frameworks",
-					"$(PROJECT_DIR)/../ios/Frameworks",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Active",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -246,10 +241,9 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = FaceTec;
+				PRODUCT_NAME = Facetec;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Facetec-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -262,9 +256,8 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-					"$(PROJECT_DIR)/../node_modules/react-native-facetec/ios/Frameworks",
-					"$(PROJECT_DIR)/../ios/Frameworks",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Active",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -272,10 +265,9 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = FaceTec;
+				PRODUCT_NAME = Facetec;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Facetec-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -285,7 +277,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "FaceTec" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Facetec" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -294,7 +286,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "FaceTec" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Facetec" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,

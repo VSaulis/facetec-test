@@ -11,6 +11,6 @@ class FacetecPackage : ReactPackage {
   }
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-    return listOf(FacetecViewManager(reactContext))
+    return listOf(FacetecManager())
   }
 }
