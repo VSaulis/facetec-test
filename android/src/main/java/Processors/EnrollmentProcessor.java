@@ -76,9 +76,6 @@ public class EnrollmentProcessor extends Processor implements FaceTecFaceScanPro
     JSONObject parameters = new JSONObject();
     try {
       facetecState.setFaceScanBase64(sessionResult.getFaceScanBase64());
-      facetecState.setAuditImagesBase64(sessionResult.getAuditTrailCompressedBase64());
-      facetecState.setLowQualityAuditTrailImagesBase64(sessionResult.getLowQualityAuditTrailCompressedBase64());
-      facetecState.setExternalDatabaseRefID(viewModel.getLatestExternalDatabaseRefID().getValue());
       parameters.put("faceScan", sessionResult.getFaceScanBase64());
       parameters.put("auditTrailImage", sessionResult.getAuditTrailCompressedBase64()[0]);
       parameters.put("lowQualityAuditTrailImage", sessionResult.getLowQualityAuditTrailCompressedBase64()[0]);

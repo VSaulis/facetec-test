@@ -9,43 +9,40 @@ declare module Types {
     | 'Cancelled'
     | 'Unknown';
 
-  type FacetecConfig = {
-    deviceKeyIdentifier: string;
-    productionKeyText?: string;
-    faceScanEncryptionKey?: string;
-    baseURL?: string;
-  };
-
   type FacetecLoad = {
-    faceScanBase64?: string;
-    auditImagesBase64?: string;
-    lowQualityAuditTrailImagesBase64?: string;
-    externalDatabaseRefID?: string;
+    faceScanBase64?: String;
   };
 
   type FacetecState = {
     status: FacetecStatus;
-    message?: string;
     load?: FacetecLoad;
   };
+  interface FacetecConfig {
+    productionKeyText: string;
+    deviceKeyIdentifier: string;
+    faceScanEncryptionKey: string;
+    sessionToken: string;
+  }
 
   type FacetecProps = {
-    onUpdate?: (status: FacetecState) => void;
-    mode?: 'authenticate' | 'checkLiveness' | 'enroll' | 'matchPhotoID';
-    vocalGuidanceMode?: 'off' | 'minimal' | 'full';
-    customization?: Customization;
-    style?: ViewStyle;
-    ref?: any;
-  } & FacetecConfig;
+    color: string;
+    style: ViewStyle;
+  };
+
+  type FacetecViewConfig = {
+    deviceKeyIdentifier: string;
+    productionKeyText: string;
+    faceScanEncryptionKey: string;
+    baseURL: string;
+  };
 
   type FacetecViewProps = {
     show?: boolean;
-    onStateUpdate?: (status: FacetecState) => void;
-    config: FacetecConfig;
+    onStateUpdate?: (state: FacetecState) => void;
+    config?: FacetecViewConfig;
     mode?: 'authenticate' | 'checkLiveness' | 'enroll' | 'matchPhotoID';
     vocalGuidanceMode?: 'off' | 'minimal' | 'full';
     customization?: Customization;
-    style?: ViewStyle;
   };
 
   type Font = {} | null;

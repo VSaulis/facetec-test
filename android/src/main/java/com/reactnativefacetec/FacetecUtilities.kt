@@ -1,37 +1,37 @@
 package com.reactnativefacetec
 
 import Processors.Config
-import Processors.ThemeHelpers
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.media.AudioManager
 import android.media.MediaPlayer
-import android.util.Base64
-import android.util.DisplayMetrics
-import android.util.Log
-import android.view.ContextThemeWrapper
-import android.view.Window
+import java.lang.Runnable
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import java.util.ArrayList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
+import android.app.Dialog
+import android.view.Window
+import android.graphics.drawable.ColorDrawable
+import android.graphics.Color
+import android.util.DisplayMetrics
+import Processors.ThemeHelpers
+import android.app.AlertDialog
 import android.widget.TextView
+import com.facetec.sdk.FaceTecVocalGuidanceCustomization
+import com.facetec.sdk.FaceTecSDK
+import android.media.AudioManager
+import android.content.Context
+import android.util.Base64
+import android.view.ContextThemeWrapper
+import org.json.JSONObject
+import java.io.IOException
+import org.json.JSONException
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import com.facetec.sdk.FaceTecSDK
-import com.facetec.sdk.FaceTecVocalGuidanceCustomization
-import com.google.gson.Gson
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.util.*
 
 class FacetecUtilities(private val facetecFragment: FacetecFragment) {
   private var vocalGuidanceOnPlayer: MediaPlayer? = null
@@ -42,8 +42,6 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
 
   fun updateStatus(state: FacetecState) {
     val data: WritableMap = Arguments.createMap()
-    val gson = Gson()
-
     data.putString(
       "status",
       when (state.status) {
@@ -55,25 +53,7 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
         else -> "Unknown"
       }
     )
-
-    if (state.message != null)
-      data.putString("faceScanBase64", state.message)
-
-    if (state.faceScanBase64 != null)
-      data.putString("faceScanBase64", state.faceScanBase64)
-
-    if (state.auditImagesBase64 != null && state.auditImagesBase64!!.isNotEmpty())
-      data.putString("auditImagesBase64", gson.toJson(state.auditImagesBase64))
-
-    if (state.lowQualityAuditTrailImagesBase64 != null)
-      data.putString(
-        "lowQualityAuditTrailImagesBase64",
-        gson.toJson(state.lowQualityAuditTrailImagesBase64)
-      )
-
-    if (state.externalDatabaseRefID != null)
-      data.putString("externalDatabaseRefID", state.externalDatabaseRefID)
-
+    data.putString("faceScanBase64", state.faceScanBase64)
     sendDataToJS(data)
   }
 
