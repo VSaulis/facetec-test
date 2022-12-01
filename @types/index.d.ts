@@ -1,7 +1,7 @@
 declare module Types {
   type ViewStyle = import('react-native').ViewStyle;
 
-  type FacetecStatus =
+  type FaceTecStatus =
     | 'Not ready'
     | 'Ready'
     | 'Succeeded'
@@ -9,40 +9,54 @@ declare module Types {
     | 'Cancelled'
     | 'Unknown';
 
-  type FacetecLoad = {
-    faceScanBase64?: String;
-  };
-
-  type FacetecState = {
-    status: FacetecStatus;
-    load?: FacetecLoad;
-  };
-  interface FacetecConfig {
-    productionKeyText: string;
+  type FaceTecConfig = {
     deviceKeyIdentifier: string;
-    faceScanEncryptionKey: string;
-    sessionToken: string;
-  }
-
-  type FacetecProps = {
-    color: string;
-    style: ViewStyle;
+    productionKeyText?: string;
+    faceScanEncryptionKey?: string;
+    sessionToken?: string;
   };
 
-  type FacetecViewConfig = {
-    deviceKeyIdentifier: string;
-    productionKeyText: string;
-    faceScanEncryptionKey: string;
-    baseURL: string;
+  type FaceTecLoad = {
+    faceScanBase64?: string;
+    sessionId?: string;
+    auditImagesBase64?: Array<string>;
+    userAgent?: string;
+    lowQualityAuditTrailImagesBase64?: Array<string>;
+    externalDatabaseRefID?: string;
   };
 
-  type FacetecViewProps = {
+  type FaceTecStateRaw = {
+    status: FaceTecStatus;
+    message?: string;
+    load?: string;
+  };
+
+  type FaceTecState = {
+    status: FaceTecStatus;
+    message?: string;
+    load?: FaceTecLoad;
+  };
+
+  type FaceTecMode = 'checkLiveness' | 'enroll';
+  //  | 'authenticate'
+  //  | 'matchPhotoID';
+  type FaceTecVocalGuidanceMode = 'off' | 'minimal' | 'full';
+
+  type FaceTecProps = {
+    onUpdate?: (status: FaceTecState) => void;
+    vocalGuidanceMode?: FaceTecVocalGuidanceMode;
+    style?: ViewStyle;
+    ref?: any;
+  } & FaceTecConfig;
+
+  type FaceTecViewProps = {
     show?: boolean;
-    onStateUpdate?: (state: FacetecState) => void;
-    config?: FacetecViewConfig;
-    mode?: 'authenticate' | 'checkLiveness' | 'enroll' | 'matchPhotoID';
-    vocalGuidanceMode?: 'off' | 'minimal' | 'full';
+    onStateUpdate?: (status: FaceTecState) => void;
+    config: FaceTecConfig;
+    mode?: FaceTecMode;
+    vocalGuidanceMode?: FaceTecVocalGuidanceMode;
     customization?: Customization;
+    style?: ViewStyle;
   };
 
   type Font = {} | null;

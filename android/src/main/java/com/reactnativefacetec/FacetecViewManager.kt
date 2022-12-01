@@ -11,7 +11,6 @@ import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.react.bridge.*
@@ -22,13 +21,10 @@ import com.facebook.react.uimanager.annotations.ReactPropGroup
 import com.facetec.sdk.FaceTecCancelButtonCustomization
 import com.facetec.sdk.FaceTecCustomization
 import com.facetec.sdk.FaceTecExitAnimationStyle
-import java.lang.RuntimeException
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
 
-class FacetecViewManager(var reactContext: ReactApplicationContext) :
+class FaceTecViewManager(var reactContext: ReactApplicationContext) :
   ViewGroupManager<FrameLayout?>() {
-  private var viewModel: FacetecViewModel? = null
+  private var viewModel: FaceTecViewModel? = null
   private var viewId: Int? = null
   private var propWidth: Int? = null
   private var propHeight: Int? = null
@@ -60,11 +56,7 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
         viewModel!!.getUtils().value!!.fadeInMainUI()
 
         // At this point, you have already handled all results in your Processor code.
-        val state: FacetecState = viewModel!!.getLatestProcessor().value!!.lastState
-        if (state.status === FacetecStatus.FAILED || state.status === FacetecStatus.CANCELLED) {
-          // Reset the enrollment identifier.
-          viewModel!!.setLatestExternalDatabaseRefID("")
-        }
+        val state: FaceTecState = viewModel!!.getLatestProcessor().value!!.lastState
         viewModel!!.getUtils().value!!.updateStatus(state)
       }
     }
@@ -79,7 +71,7 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
   public override fun createViewInstance(reactContext: ThemedReactContext): FrameLayout {
     val activity = reactContext.currentActivity as FragmentActivity
 
-    viewModel = ViewModelProvider(activity).get(FacetecViewModel::class.java)
+    viewModel = ViewModelProvider(activity).get(FaceTecViewModel::class.java)
     viewModel!!.setReactContext(reactContext)
 
     return FrameLayout(reactContext)
@@ -114,7 +106,7 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
     val parentView = root.findViewById<ViewGroup>(reactNativeViewId)
     setupLayout(parentView)
 
-    val myFragment = FacetecFragment()
+    val myFragment = FaceTecFragment()
     val activity = reactContext.currentActivity as FragmentActivity
     activity.supportFragmentManager
       .beginTransaction()
@@ -174,27 +166,6 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
     return result;
   }
 
-  @ReactProp(name = "color")
-  fun setColor(view: View, color: String) {
-    view.setBackgroundColor(Color.parseColor(color))
-  }
-
-  @ReactProp(name = "mode")
-  fun setMode(view: View, mode: String) {
-    viewModel?.setMode(
-      when (mode) {
-        "authenticate" -> FacetecMode.AUTHENTICATE
-        "checkLiveness" -> FacetecMode.CHECK_LIVENESS
-        "enroll" -> FacetecMode.ENROLL
-        "matchPhotoID" -> FacetecMode.MATCH_PHOTO_ID
-        else -> {
-          Log.d("ReactNativeFaceTec", "Chosen mode ($mode) doesn't exist")
-          FacetecMode.UNKNOWN
-        }
-      }
-    )
-  }
-
   @ReactProp(name = "vocalGuidanceMode")
   fun setVocalGuidanceMode(view: View, mode: String) {
     viewModel?.setVocalGuidanceMode(
@@ -207,11 +178,6 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
         }
       }
     )
-  }
-
-  @ReactProp(name = "baseURL")
-  fun setBaseURL(view: View, baseURL: String) {
-    viewModel?.setBaseURL(baseURL)
   }
 
   @ReactProp(name = "customization")
@@ -293,13 +259,15 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
               "backgroundColors" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.backgroundColors = Color.parseColor(value)
+                  currentCustomization.guidanceCustomization.backgroundColors =
+                    Color.parseColor(value)
                 }
               }
               "foregroundColor" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.foregroundColor = Color.parseColor(value)
+                  currentCustomization.guidanceCustomization.foregroundColor =
+                    Color.parseColor(value)
                 }
               }
               "headerFont" -> {
@@ -323,13 +291,15 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
               "readyScreenHeaderTextColor" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.readyScreenHeaderTextColor = Color.parseColor(value)
+                  currentCustomization.guidanceCustomization.readyScreenHeaderTextColor =
+                    Color.parseColor(value)
                 }
               }
               "readyScreenHeaderAttributedString" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.readyScreenHeaderAttributedString = value
+                  currentCustomization.guidanceCustomization.readyScreenHeaderAttributedString =
+                    value
                 }
               }
               "readyScreenSubtextFont" -> {
@@ -341,13 +311,15 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
               "readyScreenSubtextTextColor" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.readyScreenSubtextTextColor = Color.parseColor(value)
+                  currentCustomization.guidanceCustomization.readyScreenSubtextTextColor =
+                    Color.parseColor(value)
                 }
               }
               "readyScreenSubtextAttributedString" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.readyScreenSubtextAttributedString = value
+                  currentCustomization.guidanceCustomization.readyScreenSubtextAttributedString =
+                    value
                 }
               }
               "retryScreenHeaderFont" -> {
@@ -359,13 +331,15 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
               "retryScreenHeaderTextColor" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.retryScreenHeaderTextColor = Color.parseColor(value)
+                  currentCustomization.guidanceCustomization.retryScreenHeaderTextColor =
+                    Color.parseColor(value)
                 }
               }
               "retryScreenHeaderAttributedString" -> {
                 val value = property.value as? String;
                 if (value != null) {
-                  currentCustomization.guidanceCustomization.retryScreenHeaderAttributedString = value
+                  currentCustomization.guidanceCustomization.retryScreenHeaderAttributedString =
+                    value
                 }
               }
               "retryScreenSubtextFont" -> {
@@ -727,6 +701,21 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
     //customization.toHashMap()["FaceTecSessionTimerCustomization"].toString()
   }
 
+  @ReactProp(name = "fullAccessSessionToken")
+  fun setFullAccessSessionToken(view: View, token: String) {
+    viewModel?.setFullAccessSessionToken(token)
+  }
+
+  @ReactProp(name = "kycId")
+  fun setKycId(view: View, id: String) {
+    viewModel?.setKycId(id)
+  }
+
+  @ReactProp(name = "sessionToken")
+  fun setSessionToken(view: View, token: String) {
+    viewModel?.setSessionToken(token)
+  }
+
   @ReactProp(name = "deviceKeyIdentifier")
   fun setDeviceKeyIdentifier(view: View, deviceKeyIdentifier: String) {
     viewModel?.setDeviceKeyIdentifier(deviceKeyIdentifier)
@@ -775,6 +764,6 @@ class FacetecViewManager(var reactContext: ReactApplicationContext) :
   companion object {
     const val COMMAND_CREATE = 1
     const val COMMAND_TEST = 2
-    const val REACT_CLASS = "FacetecViewManager"
+    const val REACT_CLASS = "FaceTecViewManager"
   }
 }

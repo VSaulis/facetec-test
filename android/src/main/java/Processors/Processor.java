@@ -1,8 +1,8 @@
 package Processors;
 
-import com.reactnativefacetec.FacetecState;
+import com.reactnativefacetec.FaceTecState;
 
 public abstract class Processor {
-  public abstract FacetecState getLastState();
+  public abstract FaceTecState getLastState();
 }
 

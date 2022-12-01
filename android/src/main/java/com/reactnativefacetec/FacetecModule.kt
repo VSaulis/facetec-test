@@ -10,11 +10,11 @@ import com.facetec.sdk.FaceTecSDK
 import com.facetec.sdk.FaceTecSessionActivity
 import com.facetec.sdk.FaceTecSessionResult
 
-class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class FaceTecModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
   private lateinit var promise: Promise
 
   override fun getName(): String {
-    return "Facetec"
+    return "FaceTec"
   }
 
   @ReactMethod
@@ -26,13 +26,6 @@ class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     promise: Promise
   ) {
     this.promise = promise
-
-    Log.d("status", FaceTecSDK.getStatus(this.reactApplicationContext).toString());
-    Log.d("facetecversion", FaceTecSDK.version());
-    Log.d("productionKeyText", productionKeyText);
-    Log.d("deviceKeyIdentifier", deviceKeyIdentifier);
-    Log.d("faceScanEncryptionKey", faceScanEncryptionKey);
-    Log.d("sessionToken", sessionToken);
 
     FaceTecSDK.initializeInProductionMode(
       this.reactApplicationContext,
@@ -63,7 +56,7 @@ class FacetecModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     result: FaceTecSessionResult,
     callback: FaceTecFaceScanResultCallback
   ) {
-    Log.d("initialized", "facetec initialized");
+    Log.d("initialized", "FaceTec initialized");
     Log.d("React native", result.toString())
   }
 }

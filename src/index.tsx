@@ -1,16 +1,18 @@
-import React from 'react';
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   requireNativeComponent,
   UIManager as UIManagerWithMissingProp,
   UIManagerStatic,
   Platform,
-  NativeModules,
+  Dimensions,
   PixelRatio,
   findNodeHandle,
+  View,
 } from 'react-native';
 import { defaultCustomization } from './customization';
 
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
 const LINKING_ERROR =
   `The package 'react-native-facetec' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -18,57 +20,44 @@ const LINKING_ERROR =
   '- You are not using Expo managed workflow\n';
 
 const ComponentName =
-  Platform.OS === 'ios' ? 'FaceTecView' : 'FacetecViewManager';
+  Platform.OS === 'ios' ? 'RNOFaceTecView' : 'FaceTecViewManager';
 
 const UIManager = UIManagerWithMissingProp as UIManagerStatic & {
-  FacetecViewManager: any;
+  FaceTecViewManager: any;
 };
 
-const FacetecViewManager =
+const FaceTecViewManager =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent<Types.FacetecProps>(ComponentName)
+    ? requireNativeComponent<Types.FaceTecProps>(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };
-
-const Facetec = NativeModules.Facetec
-  ? NativeModules.Facetec
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
 
 const createFragment = (viewId: number | null) =>
   UIManager.dispatchViewManagerCommand(
     viewId,
     // we are calling the 'create' command
-    UIManager.FacetecViewManager.Commands.create.toString(),
+    UIManager.FaceTecViewManager.Commands.create.toString(),
     [viewId]
   );
 
-const AndroidFacetecView = ({
-  mode,
+const AndroidFaceTecView = ({
   show = false,
   onStateUpdate,
   vocalGuidanceMode,
   config,
-  customization = defaultCustomization,
-}: Types.FacetecViewProps) => {
+}: //customization = defaultCustomization,
+Types.FaceTecViewProps) => {
   const ref = useRef(null);
 
   const onUpdate = (event: any) => {
-    const status = event?.nativeEvent?.status as Types.FacetecStatus;
-    const faceScanBase64 = event?.nativeEvent?.faceScanBase64 as String;
+    const { status, message, load } =
+      event?.nativeEvent as Types.FaceTecStateRaw;
     if (onStateUpdate && status)
       onStateUpdate({
         status,
-        load: {
-          faceScanBase64,
-        },
+        message,
+        load: load ? JSON.parse(load) : undefined,
       });
   };
 
@@ -82,57 +71,84 @@ const AndroidFacetecView = ({
   if (!show) return null;
 
   return (
-    <FacetecViewManager
+    <FaceTecViewManager
       style={{
         // converts dpi to px, provide desired height
         height: PixelRatio.getPixelSizeForLayoutSize(0),
         // converts dpi to px, provide desired width
         width: PixelRatio.getPixelSizeForLayoutSize(0),
       }}
-      {...config}
-      mode={mode}
       vocalGuidanceMode={vocalGuidanceMode}
       onUpdate={onUpdate}
-      customization={customization}
+      {...config}
       ref={ref}
     />
   );
 };
 
-const IOSFacetecView = ({}) => {
-  return <FacetecViewManager style={{ flex: 1 }} />;
+const IOSFaceTecView = ({
+  config,
+  onStateUpdate,
+  show,
+  vocalGuidanceMode,
+}: Types.FaceTecViewProps) => {
+  const [showView, setShowView] = useState(false);
+
+  const dimensions = showView ? { height: HEIGHT, width: WIDTH } : {};
+
+  const onUpdate = (event: any) => {
+    const { status, message, load } =
+      event?.nativeEvent as Types.FaceTecStateRaw;
+
+    if (status === 'Ready') {
+      setShowView(true);
+    } else if (
+      status === 'Cancelled' ||
+      status === 'Failed' ||
+      status === 'Succeeded'
+    ) {
+      setShowView(false);
+    }
+
+    if (onStateUpdate && status)
+      onStateUpdate({
+        status,
+        message,
+        load: load ? JSON.parse(load) : undefined,
+      });
+  };
+
+  if (!show) return null;
+
+  return (
+    <View style={[{ position: 'absolute' }, dimensions]}>
+      <FaceTecViewManager
+        style={dimensions}
+        vocalGuidanceMode={vocalGuidanceMode}
+        onUpdate={onUpdate}
+        {...config}
+      />
+    </View>
+  );
 };
 
-function initialize(config: Types.FacetecConfig): Promise<boolean> {
-  const {
-    productionKeyText,
-    deviceKeyIdentifier,
-    faceScanEncryptionKey,
-    sessionToken,
-  } = config;
-  return Facetec.init(
-    productionKeyText,
-    deviceKeyIdentifier,
-    faceScanEncryptionKey,
-    sessionToken
-  );
-}
-
-const FacetecView = Platform.select({
-  ios: IOSFacetecView,
-  android: AndroidFacetecView,
+const FaceTecView = Platform.select({
+  ios: IOSFaceTecView,
+  android: AndroidFaceTecView,
+  default: () => null,
 });
+type FaceTecViewProps = Types.FaceTecViewProps;
+type FaceTecConfig = Types.FaceTecConfig;
+type FaceTecStatus = Types.FaceTecStatus;
+type FaceTecState = Types.FaceTecState;
+type FaceTecLoad = Types.FaceTecLoad;
 
-type FacetecViewProps = Types.FacetecViewProps;
-type FacetecViewConfig = Types.FacetecViewConfig;
-type FacetecStatus = Types.FacetecStatus;
-type FacetecState = Types.FacetecState;
 export {
   defaultCustomization,
-  initialize,
-  FacetecView,
-  FacetecViewProps,
-  FacetecViewConfig,
-  FacetecStatus,
-  FacetecState,
+  FaceTecView,
+  FaceTecViewProps,
+  FaceTecConfig,
+  FaceTecStatus,
+  FaceTecState,
+  FaceTecLoad,
 };

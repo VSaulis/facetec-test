@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  FacetecExample
+//  FaceTecExample
 //
 
 import Foundation

@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
+import com.reactnativefacetec.FaceTecConfig;
 import com.reactnativefacetec.R;
-import com.reactnativefacetec.FacetecUtilities;
 import com.facetec.sdk.FaceTecCancelButtonCustomization;
 import com.facetec.sdk.FaceTecCustomization;
 import com.facetec.sdk.FaceTecSDK;
@@ -14,13 +14,13 @@ import com.facetec.sdk.FaceTecSDK;
 public class ThemeHelpers {
 
   public static void setAppTheme(Context context, String theme) {
-    Config.currentCustomization = getCustomizationForTheme(context, theme);
-    Config.currentLowLightCustomization = getLowLightCustomizationForTheme(context, theme);
-    Config.currentDynamicDimmingCustomization = getDynamicDimmingCustomizationForTheme(context, theme);
+    FaceTecConfig.currentCustomization = getCustomizationForTheme(context, theme);
+    FaceTecConfig.currentLowLightCustomization = getLowLightCustomizationForTheme(context, theme);
+    FaceTecConfig.currentDynamicDimmingCustomization = getDynamicDimmingCustomizationForTheme(context, theme);
 
-    FaceTecSDK.setCustomization(Config.currentCustomization);
-    FaceTecSDK.setLowLightCustomization(Config.currentLowLightCustomization);
-    FaceTecSDK.setDynamicDimmingCustomization(Config.currentDynamicDimmingCustomization);
+    FaceTecSDK.setCustomization(FaceTecConfig.currentCustomization);
+    FaceTecSDK.setLowLightCustomization(FaceTecConfig.currentLowLightCustomization);
+    FaceTecSDK.setDynamicDimmingCustomization(FaceTecConfig.currentDynamicDimmingCustomization);
   }
 
   public static FaceTecCustomization getCustomizationForTheme(Context context, String theme) {
@@ -35,7 +35,7 @@ public class ThemeHelpers {
       currentCustomization.getIdScanCustomization().customNFCCardStartingAnimation = R.drawable.facetec_nfc_card_starting_animation;
       currentCustomization.getIdScanCustomization().customNFCCardScanningAnimation = R.drawable.facetec_nfc_card_scanning_animation;
     } else if (theme.equals("Config Wizard Theme")) {
-      currentCustomization = Config.retrieveConfigurationWizardCustomization();
+      currentCustomization = FaceTecConfig.retrieveConfigurationWizardCustomization();
       currentCustomization.getIdScanCustomization().customNFCStartingAnimation = R.drawable.facetec_nfc_starting_animation;
       currentCustomization.getIdScanCustomization().customNFCScanningAnimation = R.drawable.facetec_nfc_scanning_animation;
       currentCustomization.getIdScanCustomization().customNFCCardStartingAnimation = R.drawable.facetec_nfc_card_starting_animation;
@@ -843,7 +843,7 @@ public class ThemeHelpers {
     int[] retryScreenSlideshowImages = new int[]{R.drawable.ideal_image_1, R.drawable.ideal_image_2, R.drawable.ideal_image_3, R.drawable.ideal_image_4, R.drawable.ideal_image_5};
 
     if (theme.equals("Config Wizard Theme")) {
-      currentLowLightCustomization = Config.retrieveLowLightConfigurationWizardCustomization();
+      currentLowLightCustomization = FaceTecConfig.retrieveLowLightConfigurationWizardCustomization();
     } else if (theme.equals("Bitcoin Exchange")) {
       int primaryColor = Color.parseColor("#F79634"); // orange
       int secondaryColor = Color.parseColor("#FFFF1E"); // yellow
@@ -1036,7 +1036,7 @@ public class ThemeHelpers {
       currentDynamicDimmingCustomization.getOcrConfirmationCustomization().inputFieldPlaceholderTextColor = Color.parseColor("#66FFFFFF");
       currentDynamicDimmingCustomization.getOcrConfirmationCustomization().inputFieldBorderColor = Color.WHITE;
     } else if (theme.equals("Config Wizard Theme")) {
-      currentDynamicDimmingCustomization = Config.retrieveDynamicDimmingConfigurationWizardCustomization();
+      currentDynamicDimmingCustomization = FaceTecConfig.retrieveDynamicDimmingConfigurationWizardCustomization();
     } else if (theme.equals("Pseudo-Fullscreen")) {
       int primaryColor = Color.parseColor("#EEF6F8"); // white
       int secondaryColor = Color.parseColor("#3BC371"); // green

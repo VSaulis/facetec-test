@@ -1,59 +1,63 @@
 package com.reactnativefacetec
 
-import Processors.Config
-import android.media.MediaPlayer
-import java.lang.Runnable
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import java.util.ArrayList
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
-import android.app.Dialog
-import android.view.Window
-import android.graphics.drawable.ColorDrawable
-import android.graphics.Color
-import android.util.DisplayMetrics
 import Processors.ThemeHelpers
 import android.app.AlertDialog
-import android.widget.TextView
-import com.facetec.sdk.FaceTecVocalGuidanceCustomization
-import com.facetec.sdk.FaceTecSDK
-import android.media.AudioManager
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.util.Base64
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.ContextThemeWrapper
-import org.json.JSONObject
-import java.io.IOException
-import org.json.JSONException
+import android.view.Window
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import com.facetec.sdk.FaceTecSDK
+import com.facetec.sdk.FaceTecVocalGuidanceCustomization
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
 import java.nio.charset.StandardCharsets
+import java.util.*
 
-class FacetecUtilities(private val facetecFragment: FacetecFragment) {
+class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
   private var vocalGuidanceOnPlayer: MediaPlayer? = null
   private var vocalGuidanceOffPlayer: MediaPlayer? = null
-  private val viewModel: FacetecViewModel
+  private val viewModel: FaceTecViewModel
   var currentTheme =
-    if (Config.wasSDKConfiguredWithConfigWizard) "Config Wizard Theme" else "FaceTec Theme"
+    if (FaceTecConfig.wasSDKConfiguredWithConfigWizard) "Config Wizard Theme" else "FaceTec Theme"
 
-  fun updateStatus(state: FacetecState) {
+  fun updateStatus(state: FaceTecState) {
     val data: WritableMap = Arguments.createMap()
+
     data.putString(
       "status",
       when (state.status) {
-        (FacetecStatus.DORMANT) -> "Not ready"
-        (FacetecStatus.INITIALIZED) -> "Ready"
-        (FacetecStatus.SUCCEEDED) -> "Succeeded"
-        (FacetecStatus.FAILED) -> "Failed"
-        (FacetecStatus.CANCELLED) -> "Cancelled"
+        (FaceTecStatus.DORMANT) -> "Not ready"
+        (FaceTecStatus.INITIALIZED) -> "Ready"
+        (FaceTecStatus.SUCCEEDED) -> "Succeeded"
+        (FaceTecStatus.FAILED) -> "Failed"
+        (FaceTecStatus.CANCELLED) -> "Cancelled"
         else -> "Unknown"
       }
     )
-    data.putString("faceScanBase64", state.faceScanBase64)
+
+    if (state.message != null)
+      data.putString("message", state.message)
+    if (state.load != null)
+      data.putString("load", state.load)
+
     sendDataToJS(data)
   }
 
@@ -159,7 +163,7 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
 
   fun showThemeSelectionMenu() {
     val themes: Array<String>
-    themes = if (Config.wasSDKConfiguredWithConfigWizard) {
+    themes = if (FaceTecConfig.wasSDKConfiguredWithConfigWizard) {
       arrayOf(
         "Config Wizard Theme",
         "FaceTec Theme",
@@ -197,7 +201,7 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
   fun updateThemeTransitionView() {
     var transitionViewImage = 0
     var transitionViewTextColor =
-      Config.currentCustomization.guidanceCustomization.foregroundColor
+      FaceTecConfig.currentCustomization.guidanceCustomization.foregroundColor
     when (currentTheme) {
       "FaceTec Theme" -> {}
       "Config Wizard Theme" -> {}
@@ -205,18 +209,18 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
       "Well-Rounded" -> {
         transitionViewImage = R.drawable.well_rounded_bg
         transitionViewTextColor =
-          Config.currentCustomization.frameCustomization.backgroundColor
+          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
       }
       "Bitcoin Exchange" -> {
         transitionViewImage = R.drawable.bitcoin_exchange_bg
         transitionViewTextColor =
-          Config.currentCustomization.frameCustomization.backgroundColor
+          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
       }
       "eKYC" -> transitionViewImage = R.drawable.ekyc_bg
       "Sample Bank" -> {
         transitionViewImage = R.drawable.sample_bank_bg
         transitionViewTextColor =
-          Config.currentCustomization.frameCustomization.backgroundColor
+          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
       }
       else -> {}
     }
@@ -256,23 +260,23 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
       when (mode) {
         VocalGuidanceMode.MINIMAL -> {
           vocalGuidanceOnPlayer!!.start()
-          Config.currentCustomization.vocalGuidanceCustomization.mode =
+          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
             FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
         }
         VocalGuidanceMode.FULL -> {
           vocalGuidanceOnPlayer!!.start()
-          Config.currentCustomization.vocalGuidanceCustomization.mode =
+          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
             FaceTecVocalGuidanceCustomization.VocalGuidanceMode.FULL_VOCAL_GUIDANCE
         }
         else -> {
           //vocalGuidanceOffPlayer!!.stop();
-          Config.currentCustomization.vocalGuidanceCustomization.mode =
+          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
             FaceTecVocalGuidanceCustomization.VocalGuidanceMode.NO_VOCAL_GUIDANCE
 
         }
       }
       setVocalGuidanceSoundFiles(mode)
-      FaceTecSDK.setCustomization(Config.currentCustomization)
+      FaceTecSDK.setCustomization(FaceTecConfig.currentCustomization)
     }
   }
 
@@ -289,19 +293,19 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
 
   companion object {
     fun setVocalGuidanceSoundFiles(mode: VocalGuidanceMode?) {
-      Config.currentCustomization.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile =
         R.raw.please_frame_your_face_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.pleaseMoveCloserSoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseMoveCloserSoundFile =
         R.raw.please_move_closer_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.pleaseRetrySoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseRetrySoundFile =
         R.raw.please_retry_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.uploadingSoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.uploadingSoundFile =
         R.raw.uploading_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.facescanSuccessfulSoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.facescanSuccessfulSoundFile =
         R.raw.facescan_successful_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile =
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile =
         R.raw.please_press_button_sound_file
-      Config.currentCustomization.vocalGuidanceCustomization.mode = when (mode) {
+      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode = when (mode) {
         VocalGuidanceMode.MINIMAL ->
           FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
         VocalGuidanceMode.FULL ->
@@ -336,7 +340,7 @@ class FacetecUtilities(private val facetecFragment: FacetecFragment) {
   init {
     setUpVocalGuidancePlayers()
     viewModel = ViewModelProvider(facetecFragment.requireActivity()).get(
-      FacetecViewModel::class.java
+      FaceTecViewModel::class.java
     )
     viewModel.getVocalGuidanceMode()
       .observe(facetecFragment.requireActivity()) { mode: VocalGuidanceMode? ->

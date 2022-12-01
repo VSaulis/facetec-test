@@ -8,6 +8,10 @@ import com.facetec.sdk.FaceTecSDK.InitializeCallback
 import android.util.Log
 import com.facetec.sdk.FaceTecSDK
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -17,55 +21,64 @@ import okhttp3.Response
 import org.json.JSONObject
 import org.json.JSONException
 import java.util.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
-class FacetecFragment() : Fragment(R.layout.activity_main) {
-  private var viewModel: FacetecViewModel? = null
-  val latestExternalDatabaseRefID: String?
-    get() = viewModel!!.getLatestExternalDatabaseRefID().value
+class FaceTecFragment : Fragment(R.layout.activity_main), CoroutineScope {
+  private var viewModel: FaceTecViewModel? = null
+  private var job: Job = Job()
+  override val coroutineContext: CoroutineContext
+    get() = Dispatchers.Main + job
 
-  private fun startProcessor(mode: FacetecMode) {
-    Log.d("ReactNativeFaceTec", "Starting mode: $mode")
-    when (mode) {
-      FacetecMode.AUTHENTICATE -> onAuthenticateUserPressed()
-      FacetecMode.CHECK_LIVENESS -> onLivenessCheckPressed()
-      FacetecMode.ENROLL -> onEnrollUserPressed()
-      FacetecMode.MATCH_PHOTO_ID -> onPhotoIDMatchPressed()
-      else -> {
-        Log.d("ReactNativeFaceTec", "Mode was not specified, using enroll as a default action")
-        onEnrollUserPressed()
-      }
+  private suspend fun startProcessor() {
+    var sessionToken: String = viewModel!!.getSessionToken().value ?: "";
+
+    if (sessionToken.isBlank()) {
+      Log.d("ReactNativeFaceTec", "Session token was not provided")
+      sessionToken = getSessionToken()
+      viewModel!!.setSessionToken(sessionToken)
+    }
+
+    if (sessionToken.isNotBlank()) {
+      Log.d("ReactNativeFaceTec", "Provided session token: $sessionToken")
+      viewModel?.getUtils()?.value?.updateStatus(FaceTecState(FaceTecStatus.INITIALIZED))
+
+      viewModel!!.setLatestProcessor(
+        FaceTecProcessor(
+          activity,
+          sessionToken,
+        )
+      )
+    } else {
+      viewModel?.getUtils()?.value?.updateStatus(FaceTecState(FaceTecStatus.FAILED, "Could not retrieve session token"))
     }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    viewModel = ViewModelProvider(requireActivity()).get(FacetecViewModel::class.java)
+    viewModel = ViewModelProvider(requireActivity()).get(FaceTecViewModel::class.java)
 
     if (Objects.isNull(viewModel!!.getUtils().value)) {
-      viewModel!!.setUtils(FacetecUtilities(this))
+      viewModel!!.setUtils(FaceTecUtilities(this))
     }
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    val facetecMode: FacetecMode? = viewModel!!.getMode().value;
-
     // Initialize FaceTec SDK
-    Config.initializeFaceTecSDK(
+    FaceTecConfig.initializeFaceTecSDK(
       context,
       viewModel?.getProductionKeyText()?.value,
       viewModel?.getDeviceKeyIdentifier()?.value,
       viewModel?.getFaceScanEncryptionKey()?.value,
       object : InitializeCallback() {
         override fun onCompletion(successful: Boolean) {
-          if (successful && facetecMode != null) {
+          if (successful) {
             Log.d("ReactNativeFaceTec", "Initialization Successful.")
-            viewModel?.getUtils()?.value?.updateStatus(FacetecState(FacetecStatus.INITIALIZED))
-            startProcessor(facetecMode)
+            launch {
+              startProcessor()
+            }
           }
-
-          // Displays the FaceTec SDK Status to text field.
-          //utils.displayStatus(FaceTecSDK.getStatus(view.context).toString())
         }
       })
 
@@ -73,100 +86,13 @@ class FacetecFragment() : Fragment(R.layout.activity_main) {
     //ThemeHelpers.setAppTheme(view.context, utils.currentTheme)
 
     // Set the strings to be used for group names, field names, and placeholder texts for the FaceTec ID Scan User OCR Confirmation Screen.
-    FacetecUtilities.setOCRLocalization(view.getContext())
+    FaceTecUtilities.setOCRLocalization(view.context)
   }
 
-  // Perform Liveness Check.
-  fun onLivenessCheckPressed() {
-    viewModel!!.setIsSessionPreparingToLaunch(true)
-    viewModel!!.getUtils().value?.fadeOutMainUIAndPrepareForFaceTecSDK(
-      Runnable {
-        getSessionToken(object : SessionTokenCallback {
-          override fun onSessionTokenReceived(sessionToken: String?) {
-            viewModel!!.setIsSessionPreparingToLaunch(false)
-            viewModel!!.setLatestProcessor(
-              LivenessCheckProcessor(
-                sessionToken,
-                activity,
-              )
-            )
-          }
-        })
-      })
-  }
-
-  // Perform Enrollment, generating a username each time to guarantee uniqueness.
-  fun onEnrollUserPressed() {
-    Log.d("ReactNativeFaceTec", "$activity.toString()")
-    viewModel!!.setIsSessionPreparingToLaunch(true)
-    viewModel!!.getUtils().value
-      ?.fadeOutMainUIAndPrepareForFaceTecSDK {
-        getSessionToken(object : SessionTokenCallback {
-          override fun onSessionTokenReceived(sessionToken: String?) {
-            viewModel!!.setIsSessionPreparingToLaunch(false)
-            viewModel!!.setLatestExternalDatabaseRefID("android_sample_app_" + UUID.randomUUID())
-            viewModel!!.setLatestProcessor(
-              EnrollmentProcessor(
-                sessionToken,
-                activity
-              )
-            )
-          }
-        })
-      }
-  }
-
-  // Perform Authentication, using the username from Enrollment.
-  fun onAuthenticateUserPressed() {
-    viewModel!!.setIsSessionPreparingToLaunch(true)
-    if (viewModel!!.getLatestExternalDatabaseRefID().value!!.isEmpty()) {
-      Log.d("ReactNativeFaceTec", "Please enroll first before trying authentication.")
-      return
-    }
-    viewModel!!.getUtils().value
-      ?.fadeOutMainUIAndPrepareForFaceTecSDK {
-        getSessionToken(object : SessionTokenCallback {
-          override fun onSessionTokenReceived(sessionToken: String?) {
-            viewModel!!.setIsSessionPreparingToLaunch(false)
-            viewModel!!.setLatestProcessor(
-              AuthenticateProcessor(
-                sessionToken,
-                activity,
-              )
-            )
-          }
-        })
-      }
-  }
-
-  // Perform Photo ID Match, generating a username each time to guarantee uniqueness.
-  fun onPhotoIDMatchPressed() {
-    viewModel!!.setIsSessionPreparingToLaunch(true)
-    viewModel!!.getUtils().value
-      ?.fadeOutMainUIAndPrepareForFaceTecSDK {
-        getSessionToken(object : SessionTokenCallback {
-          override fun onSessionTokenReceived(sessionToken: String?) {
-            viewModel!!.setIsSessionPreparingToLaunch(false)
-            viewModel!!.setLatestExternalDatabaseRefID("android_sample_app_" + UUID.randomUUID())
-            viewModel!!.setLatestProcessor(
-              PhotoIDMatchProcessor(
-                sessionToken,
-                activity,
-              )
-            )
-          }
-        })
-      }
-  }
-
-  interface SessionTokenCallback {
-    fun onSessionTokenReceived(sessionToken: String?)
-  }
-
-  private fun getSessionToken(sessionTokenCallback: SessionTokenCallback) {
+  private suspend fun getSessionToken(): String {
     val deviceKeyIdentifier =
-      viewModel!!.getDeviceKeyIdentifier().value ?: Config.DeviceKeyIdentifier
-    val baseURL = viewModel!!.getBaseURL().value ?: Config.BaseURL
+      viewModel!!.getDeviceKeyIdentifier().value ?: FaceTecConfig.DeviceKeyIdentifier
+    val baseURL = viewModel!!.getBaseURL().value ?: FaceTecConfig.BaseURL
 
     Log.d("ReactNativeFaceTec", "BaseURL used for getting the session token: $baseURL")
 
@@ -177,39 +103,54 @@ class FacetecFragment() : Fragment(R.layout.activity_main) {
       .url("$baseURL/session-token")
       .get()
       .build()
-    NetworkingHelpers.getApiClient().newCall(request).enqueue(object : Callback {
-      override fun onFailure(call: Call, e: IOException) {
-        e.printStackTrace()
-        Log.d("ReactNativeFaceTec", "Exception raised while attempting HTTPS call.")
 
-        // If this comes from HTTPS cancel call, don't set the sub code to NETWORK_ERROR.
-        if (e.message != NetworkingHelpers.OK_HTTP_RESPONSE_CANCELED) {
-          viewModel!!.getUtils().value!!.handleErrorGettingServerSessionToken()
-        }
-      }
+    return suspendCoroutine { cont ->
+      NetworkingHelpers.getApiClient().newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+          e.printStackTrace()
+          Log.d("ReactNativeFaceTec", "Exception raised while attempting HTTPS call.")
 
-      @Throws(IOException::class)
-      override fun onResponse(call: Call, response: Response) {
-        val responseString = response.body!!.string()
-        response.body!!.close()
-        try {
-          val responseJSON = JSONObject(responseString)
-          if (responseJSON.has("sessionToken")) {
-            val sessionToken = responseJSON.getString("sessionToken")
-            Log.d("ReactNativeFaceTec", "Current session token: $sessionToken")
-            sessionTokenCallback.onSessionTokenReceived(sessionToken)
-          } else {
+          viewModel?.getUtils()?.value?.updateStatus(
+            FaceTecState(
+              FaceTecStatus.FAILED,
+              "Could not get the FaceTec session token."
+            )
+          )
+          // If this comes from HTTPS cancel call, don't set the sub code to NETWORK_ERROR.
+          if (e.message != NetworkingHelpers.OK_HTTP_RESPONSE_CANCELED) {
             viewModel!!.getUtils().value!!.handleErrorGettingServerSessionToken()
           }
-        } catch (e: JSONException) {
-          e.printStackTrace()
-          Log.d(
-            "ReactNativeFaceTec",
-            "Exception raised while attempting to parse JSON result."
-          )
-          viewModel!!.getUtils().value!!.handleErrorGettingServerSessionToken()
         }
-      }
-    })
+
+        @Throws(IOException::class)
+        override fun onResponse(call: Call, response: Response) {
+          val responseString = response.body!!.string()
+          response.body!!.close()
+          try {
+            val responseJSON = JSONObject(responseString)
+            if (responseJSON.has("sessionToken")) {
+              val sessionToken = responseJSON.getString("sessionToken")
+              Log.d("ReactNativeFaceTec", "Current session token: $sessionToken")
+              cont.resumeWith(Result.success(sessionToken))
+            } else {
+              viewModel!!.getUtils().value!!.handleErrorGettingServerSessionToken()
+            }
+          } catch (e: JSONException) {
+            e.printStackTrace()
+            Log.d(
+              "ReactNativeFaceTec",
+              "Exception raised while attempting to parse JSON result."
+            )
+            viewModel?.getUtils()?.value?.updateStatus(
+              FaceTecState(
+                FaceTecStatus.FAILED,
+                "Exception raised while attempting to parse JSON result."
+              )
+            )
+            viewModel!!.getUtils().value!!.handleErrorGettingServerSessionToken()
+          }
+        }
+      })
+    }
   }
 }

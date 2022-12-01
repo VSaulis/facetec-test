@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['Facetec_kotlinVersion']
+  def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['FaceTec_kotlinVersion']
 
   repositories {
     google()
@@ -27,11 +27,11 @@ if (isNewArchitectureEnabled()) {
 }
 
 def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['Facetec_' + name]
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['FaceTec_' + name]
 }
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['Facetec_' + name]).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['FaceTec_' + name]).toInteger()
 }
 
 android {
@@ -142,18 +142,21 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
-  // based on FaceTec example (version 9.4.20)
+  // based on FaceTec example (version 9.6.5)
   implementation 'com.squareup.okhttp3:okhttp:3.12.1'
   implementation 'com.squareup.okio:okio:1.15.0'
   testImplementation 'junit:junit:4.12'
   implementation 'androidx.appcompat:appcompat:1.3.0'
-  implementation 'com.google.code.gson:gson:2.8.6'
+
+  // other
+  implementation 'com.google.code.gson:gson:2.10'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 }
 
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
-    libraryName = "Facetec"
+    libraryName = "FaceTec"
     codegenJavaPackageName = "com.reactnativefacetec"
   }
 }
