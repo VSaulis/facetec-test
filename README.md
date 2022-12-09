@@ -4,8 +4,20 @@ React Native Facetec integration
 
 ## Installation
 
-```sh
-npm install react-native-facetec
+1. Clone this repository
+2. Add this repository as a dependency, currently it's not published to npm,
+   so you need to add it as a dependency from a local path
+
+```json
+"dependencies": {
+  "react-native-facetec": "file:/path/to/react-native-facetec"
+}
+```
+
+3. Install the dependencies
+
+```bash
+yarn install
 ```
 
 ## Usage
@@ -35,3 +47,7 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
+
+```
+
+```

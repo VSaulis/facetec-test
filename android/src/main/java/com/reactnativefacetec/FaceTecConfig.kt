@@ -7,8 +7,8 @@ package com.reactnativefacetec
 import android.content.Context
 import com.facetec.sdk.FaceTecSDK.InitializeCallback
 import android.util.Log
-import com.facetec.sdk.FaceTecSDK
 import com.facetec.sdk.FaceTecCustomization
+import com.facetec.sdk.FaceTecSDK
 
 object FaceTecConfig {
   // -------------------------------------
@@ -83,39 +83,4 @@ object FaceTecConfig {
       )
     }
   }
-
-  // -------------------------------------
-  // This app can modify the customization to demonstrate different look/feel preferences
-  // NOTE: This function is auto-populated by the FaceTec SDK Configuration Wizard based on your UI Customizations you picked in the Configuration Wizard GUI.
-  @JvmStatic
-  fun retrieveConfigurationWizardCustomization(): FaceTecCustomization {
-    return FaceTecCustomization()
-  }
-
-  @JvmStatic
-  fun retrieveLowLightConfigurationWizardCustomization(): FaceTecCustomization {
-    return FaceTecCustomization()
-  }
-
-  @JvmStatic
-  fun retrieveDynamicDimmingConfigurationWizardCustomization(): FaceTecCustomization {
-    return FaceTecCustomization()
-  }
-
-  @JvmField
-  var currentCustomization = retrieveConfigurationWizardCustomization()
-
-  @JvmField
-  var currentLowLightCustomization = retrieveLowLightConfigurationWizardCustomization()
-
-  @JvmField
-  var currentDynamicDimmingCustomization =
-    retrieveDynamicDimmingConfigurationWizardCustomization()
-
-  // -------------------------------------
-  // Boolean to indicate the FaceTec SDK Configuration Wizard was used to generate this file.
-  // In this Sample App, if this variable is true, a "Config Wizard Theme" will be added to this App's Design Showcase,
-  // and choosing this option will set the FaceTec SDK UI/UX Customizations to the Customizations that you selected in the
-  // Configuration Wizard.
-  var wasSDKConfiguredWithConfigWizard = false
 }

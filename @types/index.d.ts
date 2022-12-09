@@ -46,6 +46,7 @@ declare module Types {
     onUpdate?: (status: FaceTecState) => void;
     vocalGuidanceMode?: FaceTecVocalGuidanceMode;
     style?: ViewStyle;
+    customization?: string | FaceTecCustomization;
     ref?: any;
   } & FaceTecConfig;
 
@@ -61,17 +62,17 @@ declare module Types {
 
   type Font = {} | null;
   type Color = string | null;
-  type Image = {} | null;
+  type Image = string | null;
   type Animation = {} | null;
 
   type Customization = {
-    FaceTecSessionTimerCustomization?: {
+    faceTecSessionTimerCustomization?: {
       livenessCheckNoInteractionTimeout?: number;
       idScanNoInteractionTimeout?: number;
     };
 
-    FaceTecOCRConfirmationCustomization?: {
-      backgroundColors?: Color;
+    faceTecOCRConfirmationCustomization?: {
+      backgroundColors?: Array<Color>;
       mainHeaderDividerLineColor?: Color;
       mainHeaderDividerLineWidth?: number;
       mainHeaderFont?: Font;
@@ -103,7 +104,7 @@ declare module Types {
       buttonCornerRadius?: number;
     };
 
-    FaceTecIDScanCustomization?: {
+    faceTecIDScanCustomization?: {
       showSelectionScreenBrandingImage?: boolean;
       selectionScreenBrandingImage?: Image;
       showSelectionScreenDocumentImage?: boolean;
@@ -114,9 +115,9 @@ declare module Types {
       captureFrameCornerRadius?: number;
       activeTorchButtonImage?: Image;
       inactiveTorchButtonImage?: Image;
-      selectionScreenBackgroundColors?: Color;
+      selectionScreenBackgroundColors?: Array<Color>;
       selectionScreenForegroundColor?: Color;
-      reviewScreenBackgroundColors?: Color;
+      reviewScreenBackgroundColors?: Array<Color>;
       reviewScreenForegroundColor?: Color;
       reviewScreenTextBackgroundColor?: Color;
       reviewScreenTextBackgroundBorderColor?: Color;
@@ -152,16 +153,16 @@ declare module Types {
       customStaticNFCSkipOrErrorAnimation?: Animation;
     };
 
-    FaceTecOverlayCustomization?: {
+    faceTecOverlayCustomization?: {
       backgroundColor?: string;
       brandingImage?: Image;
       showBrandingImage?: boolean;
     };
 
-    FaceTecResultScreenCustomization?: {
+    faceTecResultScreenCustomization?: {
       animationRelativeScale?: number;
       foregroundColor?: Color;
-      backgroundColors?: Color;
+      backgroundColors?: Array<Color>;
       activityIndicatorColor?: Color;
       customActivityIndicatorImage?: Image;
       customActivityIndicatorRotationInterval?: number;
@@ -180,8 +181,8 @@ declare module Types {
       messageFont?: Font;
     };
 
-    FaceTecGuidanceCustomization?: {
-      backgroundColors?: Color;
+    faceTecGuidanceCustomization?: {
+      backgroundColors?: Array<Color>;
       foregroundColor?: Color;
       headerFont?: Font;
       subtextFont?: Font;
@@ -221,7 +222,7 @@ declare module Types {
       cameraPermissionsScreenImage?: Image;
     };
 
-    FaceTecFrameCustomization?: {
+    faceTecFrameCustomization?: {
       borderWidth?: number;
       cornerRadius?: number;
       borderColor?: string;
@@ -229,16 +230,16 @@ declare module Types {
       elevation?: number;
     };
 
-    FaceTecFeedbackCustomization?: {
+    faceTecFeedbackCustomization?: {
       cornerRadius?: number;
-      backgroundColors?: Color;
+      backgroundColors?: Array<Color>;
       textColor?: Color;
       textFont?: Font;
       enablePulsatingText?: boolean;
       elevation?: number;
     };
 
-    FaceTecOvalCustomization?: {
+    faceTecOvalCustomization?: {
       strokeWidth?: number;
       strokeColor?: Color;
       progressStrokeWidth?: number;
@@ -247,11 +248,12 @@ declare module Types {
       progressRadialOffset?: number;
     };
 
-    FaceTecCancelButtonCustomization?: {
+    faceTecCancelButtonCustomization?: {
       location: 'topLeft' | 'topRight' | 'disabled';
+      customImage?: Image;
     };
 
-    FaceTecExitAnimationStyle?: {
+    faceTecExitAnimationStyle?: {
       animation: 'circleFade' | 'rippleOut' | 'rippleIn' | 'none';
     };
   };

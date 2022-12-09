@@ -1,6 +1,5 @@
 package com.reactnativefacetec
 
-import Processors.*
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -83,7 +82,8 @@ class FaceTecFragment : Fragment(R.layout.activity_main), CoroutineScope {
       })
 
     // Set your FaceTec Device SDK Customizations.
-    //ThemeHelpers.setAppTheme(view.context, utils.currentTheme)
+    viewModel?.let { FaceTecUtilities.setAppTheme(it) }
+
 
     // Set the strings to be used for group names, field names, and placeholder texts for the FaceTec ID Scan User OCR Confirmation Screen.
     FaceTecUtilities.setOCRLocalization(view.context)

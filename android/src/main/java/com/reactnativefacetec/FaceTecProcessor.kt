@@ -4,23 +4,15 @@
 // NOTE: This example DOES NOT perform a secure Enrollment. To perform a secure Enrollment, you need to actually make an API call.
 package com.reactnativefacetec
 
-import Processors.Processor
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.facetec.sdk.*
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import okhttp3.*
 import com.facetec.sdk.FaceTecSDK.createFaceTecAPIUserAgentString
-import java.io.IOException
 
-class FaceTecProcessor(context: Context?, sessionToken: String?) : Processor(),
-  FaceTecFaceScanProcessor {
-  private val facetecFragment: FaceTecFragment? = null
+class FaceTecProcessor(context: Context?, sessionToken: String?) : FaceTecFaceScanProcessor {
   private val facetecState = FaceTecState()
   private var viewModel: FaceTecViewModel? = null
 
@@ -37,7 +29,6 @@ class FaceTecProcessor(context: Context?, sessionToken: String?) : Processor(),
 
     // IMPORTANT: FaceTecSDK.FaceTecSessionStatus.SessionCompletedSuccessfully DOES NOT mean the enrollment was Successful.
     // It simply means the User completed the Session and a 3D FaceScan was created. You still need to perform the enrollment on your Servers.
-    val gson = Gson()
     val load = JsonObject()
     load.addProperty("faceScanBase64", sessionResult.faceScanBase64)
     load.addProperty("sessionId", sessionResult.sessionId)
@@ -61,45 +52,6 @@ class FaceTecProcessor(context: Context?, sessionToken: String?) : Processor(),
 
     facetecState.load = load.toString();
 
-    val body: RequestBody = FormBody.Builder()
-      .add("auditImagesBase64", sessionResult.auditTrailCompressedBase64.toString())
-      .build()
-    val request: Request = Request.Builder()
-      .url(
-        "https://app-idvsapi-snd-ond.azurewebsites.net/v1/kyc-identifications/" + viewModel!!.getKycId().value + "/face-tec-liveness-2d"
-      )
-      .header("Athorization", "Bearer " + viewModel!!.getFullAccessSessionToken().value)
-      .header("Content-Type", "application/json") //
-      // Part 7:  Demonstrates updating the Progress Bar based on the progress event.
-      //
-      .put(
-        body
-      ) /*.put(new ProgressRequestBody(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), parameters.toString()),
-        new ProgressRequestBody.Listener() {
-          @Override
-          public void onUploadProgressChanged(long bytesWritten, long totalBytes) {
-            final float uploadProgressPercent = ((float) bytesWritten) / ((float) totalBytes);
-            faceScanResultCallback.uploadProgress(uploadProgressPercent);
-          }
-        }))*/
-      .build()
-
-    /*Log.d("IMPORTANT", "REQUEST: $request")
-    val client = OkHttpClient()
-    try {
-      val response = client.newCall(request).execute()
-      Log.d("IMPORTANT", "RESPONSE: $response")
-      // Do something with the response.
-      response.close()
-      facetecState.status = FaceTecStatus.SUCCEEDED
-      faceScanResultCallback.cancel()
-    } catch (e: IOException) {
-      e.printStackTrace()
-      facetecState.status = FaceTecStatus.CANCELLED
-      faceScanResultCallback.cancel()
-    }*/
-
-
     // DEVELOPER TODOS:
     // 1.  Call your own API with the above data and pass into the Server SDK
     // 2.  If the Server SDK successfully processes the data, call proceedToNextStep(scanResultBlob), passing in the generated scanResultBlob to the parameter.
@@ -119,7 +71,7 @@ class FaceTecProcessor(context: Context?, sessionToken: String?) : Processor(),
   }
 
 
-  override fun getLastState(): FaceTecState? {
+  fun getLastState(): FaceTecState? {
     return this.facetecState
   }
 

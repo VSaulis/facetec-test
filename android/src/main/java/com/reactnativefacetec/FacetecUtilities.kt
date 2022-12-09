@@ -1,6 +1,5 @@
 package com.reactnativefacetec
 
-import Processors.ThemeHelpers
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -17,7 +16,6 @@ import android.view.ContextThemeWrapper
 import android.view.Window
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
@@ -35,8 +33,6 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
   private var vocalGuidanceOnPlayer: MediaPlayer? = null
   private var vocalGuidanceOffPlayer: MediaPlayer? = null
   private val viewModel: FaceTecViewModel
-  var currentTheme =
-    if (FaceTecConfig.wasSDKConfiguredWithConfigWizard) "Config Wizard Theme" else "FaceTec Theme"
 
   fun updateStatus(state: FaceTecState) {
     val data: WritableMap = Arguments.createMap()
@@ -78,79 +74,12 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
       ?.receiveEvent(facetecFragment.id, "onError", data)
   }
 
-  // Disable buttons to prevent hammering, fade out main interface elements, and shuffle the guidance images.
-  fun fadeOutMainUIAndPrepareForFaceTecSDK(callback: Runnable?) {
-    facetecFragment.requireActivity().runOnUiThread {
-      val themeTransitionImageView =
-        facetecFragment.requireActivity().findViewById<ImageView>(R.id.themeTransitionImageView)
-      themeTransitionImageView.animate().alpha(1f).setDuration(600).start()
-      val contentLayout =
-        facetecFragment.requireActivity().findViewById<RelativeLayout>(R.id.contentLayout)
-      contentLayout.animate().alpha(0f).setDuration(600).withEndAction(callback).start()
-    }
-  }
-
   fun fadeInMainUI() {
     facetecFragment.requireActivity().runOnUiThread {
       val contentLayout =
         facetecFragment.requireActivity().findViewById<RelativeLayout>(R.id.contentLayout)
       contentLayout.animate().alpha(1f).duration = 600
-      val themeTransitionImageView =
-        facetecFragment.requireActivity().findViewById<ImageView>(R.id.themeTransitionImageView)
-      themeTransitionImageView.animate().alpha(0f).duration = 600
     }
-  }
-
-  fun showAuditTrailImages() {
-    // Store audit trail images from latest session result for inspection
-    val auditTrailAndIDScanImages = ArrayList<Bitmap>()
-    if (viewModel.getLatestSessionResult().value != null) {
-      // convert the compressed base64 encoded audit trail images into bitmaps
-      for (compressedBase64EncodedAuditTrailImage in viewModel.getLatestSessionResult().value!!
-        .auditTrailCompressedBase64) {
-        val decodedString =
-          Base64.decode(compressedBase64EncodedAuditTrailImage, Base64.DEFAULT)
-        val auditTrailImage =
-          BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        auditTrailAndIDScanImages.add(auditTrailImage)
-      }
-    }
-    if (viewModel.getLatestIDScanResult().value != null && !viewModel.getLatestIDScanResult().value!!
-        .frontImagesCompressedBase64.isEmpty()
-    ) {
-      val decodedString = Base64.decode(
-        viewModel.getLatestIDScanResult().value!!.frontImagesCompressedBase64[0],
-        Base64.DEFAULT
-      )
-      val frontImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-      auditTrailAndIDScanImages.add(frontImage)
-    }
-    if (auditTrailAndIDScanImages.size <= 0) {
-      Log.d("ReactNativeFaceTec", "No audit trail images obtained")
-      return
-    }
-    for (i in auditTrailAndIDScanImages.indices.reversed()) {
-      addDismissableImageToInterface(auditTrailAndIDScanImages[i])
-    }
-  }
-
-  fun addDismissableImageToInterface(imageBitmap: Bitmap?) {
-    val imageDialog = Dialog(facetecFragment.requireContext())
-    imageDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-    imageDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    val imageView = ImageView(facetecFragment.context)
-    imageView.setImageBitmap(imageBitmap)
-    imageView.setOnClickListener { imageDialog.dismiss() }
-
-    // Scale image to better fit device's display.
-    val dm = DisplayMetrics()
-    facetecFragment.requireActivity().windowManager.defaultDisplay.getMetrics(dm)
-    val layout = RelativeLayout.LayoutParams(
-      java.lang.Double.valueOf(dm.widthPixels * 0.5).toInt(),
-      java.lang.Double.valueOf(dm.heightPixels * 0.5).toInt()
-    )
-    imageDialog.addContentView(imageView, layout)
-    imageDialog.show()
   }
 
   fun handleErrorGettingServerSessionToken() {
@@ -158,78 +87,6 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
       "ReactNativeFaceTec",
       "Session could not be started due to an unexpected issue during the network request."
     )
-    fadeInMainUI()
-  }
-
-  fun showThemeSelectionMenu() {
-    val themes: Array<String>
-    themes = if (FaceTecConfig.wasSDKConfiguredWithConfigWizard) {
-      arrayOf(
-        "Config Wizard Theme",
-        "FaceTec Theme",
-        "Pseudo-Fullscreen",
-        "Well-Rounded",
-        "Bitcoin Exchange",
-        "eKYC",
-        "Sample Bank"
-      )
-    } else {
-      arrayOf(
-        "FaceTec Theme",
-        "Pseudo-Fullscreen",
-        "Well-Rounded",
-        "Bitcoin Exchange",
-        "eKYC",
-        "Sample Bank"
-      )
-    }
-    val builder = AlertDialog.Builder(
-      ContextThemeWrapper(
-        facetecFragment.context,
-        android.R.style.Theme_Holo_Light
-      )
-    )
-    builder.setTitle("Select a Theme:")
-    builder.setItems(themes) { dialog, index ->
-      currentTheme = themes[index]
-      ThemeHelpers.setAppTheme(facetecFragment.context, currentTheme)
-      updateThemeTransitionView()
-    }
-    builder.show()
-  }
-
-  fun updateThemeTransitionView() {
-    var transitionViewImage = 0
-    var transitionViewTextColor =
-      FaceTecConfig.currentCustomization.guidanceCustomization.foregroundColor
-    when (currentTheme) {
-      "FaceTec Theme" -> {}
-      "Config Wizard Theme" -> {}
-      "Pseudo-Fullscreen" -> {}
-      "Well-Rounded" -> {
-        transitionViewImage = R.drawable.well_rounded_bg
-        transitionViewTextColor =
-          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
-      }
-      "Bitcoin Exchange" -> {
-        transitionViewImage = R.drawable.bitcoin_exchange_bg
-        transitionViewTextColor =
-          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
-      }
-      "eKYC" -> transitionViewImage = R.drawable.ekyc_bg
-      "Sample Bank" -> {
-        transitionViewImage = R.drawable.sample_bank_bg
-        transitionViewTextColor =
-          FaceTecConfig.currentCustomization.frameCustomization.backgroundColor
-      }
-      else -> {}
-    }
-    val themeTransitionImageView =
-      facetecFragment.requireActivity().findViewById<ImageView>(R.id.themeTransitionImageView)
-    themeTransitionImageView.setImageResource(transitionViewImage)
-    val themeTransitionText =
-      facetecFragment.requireActivity().findViewById<TextView>(R.id.themeTransitionText)
-    themeTransitionText.setTextColor(transitionViewTextColor)
   }
 
   fun setUpVocalGuidancePlayers() {
@@ -239,6 +96,8 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
   }
 
   fun setVocalGuidanceMode(mode: VocalGuidanceMode?) {
+    val currentCustomization = viewModel.getCustomization().value
+
     if (isDeviceMuted) {
       val alertDialog = AlertDialog.Builder(
         ContextThemeWrapper(
@@ -249,70 +108,79 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
       alertDialog.setMessage("Vocal Guidance is disabled when the device is muted")
       alertDialog.setButton(
         AlertDialog.BUTTON_NEUTRAL, "OK"
-      ) { dialog, which -> dialog.dismiss() }
+      ) { dialog, _ -> dialog.dismiss() }
       alertDialog.show()
       return
     }
     if (vocalGuidanceOnPlayer!!.isPlaying || vocalGuidanceOffPlayer!!.isPlaying) {
       return
     }
-    facetecFragment.requireActivity().runOnUiThread {
-      when (mode) {
-        VocalGuidanceMode.MINIMAL -> {
-          vocalGuidanceOnPlayer!!.start()
-          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
-            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
-        }
-        VocalGuidanceMode.FULL -> {
-          vocalGuidanceOnPlayer!!.start()
-          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
-            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.FULL_VOCAL_GUIDANCE
-        }
-        else -> {
-          //vocalGuidanceOffPlayer!!.stop();
-          FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode =
-            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.NO_VOCAL_GUIDANCE
+    if (currentCustomization != null) {
+      facetecFragment.requireActivity().runOnUiThread {
+        when (mode) {
+          VocalGuidanceMode.MINIMAL -> {
+            vocalGuidanceOnPlayer!!.start()
+            currentCustomization.vocalGuidanceCustomization.mode =
+              FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
+          }
+          VocalGuidanceMode.FULL -> {
+            vocalGuidanceOnPlayer!!.start()
+            currentCustomization.vocalGuidanceCustomization.mode =
+              FaceTecVocalGuidanceCustomization.VocalGuidanceMode.FULL_VOCAL_GUIDANCE
+          }
+          else -> {
+            //vocalGuidanceOffPlayer!!.stop();
+            currentCustomization.vocalGuidanceCustomization.mode =
+              FaceTecVocalGuidanceCustomization.VocalGuidanceMode.NO_VOCAL_GUIDANCE
 
+          }
         }
+        setVocalGuidanceSoundFiles(mode, viewModel)
+        FaceTecSDK.setCustomization(currentCustomization)
       }
-      setVocalGuidanceSoundFiles(mode)
-      FaceTecSDK.setCustomization(FaceTecConfig.currentCustomization)
     }
   }
 
-  val isDeviceMuted: Boolean
+  private val isDeviceMuted: Boolean
     get() {
       val audio =
         facetecFragment.requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
-      return if (audio.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
-        true
-      } else {
-        false
-      }
+      return audio.getStreamVolume(AudioManager.STREAM_MUSIC) == 0
     }
 
   companion object {
-    fun setVocalGuidanceSoundFiles(mode: VocalGuidanceMode?) {
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile =
-        R.raw.please_frame_your_face_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseMoveCloserSoundFile =
-        R.raw.please_move_closer_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleaseRetrySoundFile =
-        R.raw.please_retry_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.uploadingSoundFile =
-        R.raw.uploading_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.facescanSuccessfulSoundFile =
-        R.raw.facescan_successful_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile =
-        R.raw.please_press_button_sound_file
-      FaceTecConfig.currentCustomization.vocalGuidanceCustomization.mode = when (mode) {
-        VocalGuidanceMode.MINIMAL ->
-          FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
-        VocalGuidanceMode.FULL ->
-          FaceTecVocalGuidanceCustomization.VocalGuidanceMode.FULL_VOCAL_GUIDANCE
-        else ->
-          FaceTecVocalGuidanceCustomization.VocalGuidanceMode.NO_VOCAL_GUIDANCE
+    fun setAppTheme(viewModel: FaceTecViewModel) {
+      Log.d("THEME", "This is the theme ${viewModel.getCustomization().value.toString()}")
+      FaceTecSDK.setCustomization(viewModel.getCustomization().value)
+      FaceTecSDK.setLowLightCustomization(viewModel.getCustomization().value)
+      FaceTecSDK.setDynamicDimmingCustomization(viewModel.getCustomization().value)
+    }
 
+    fun setVocalGuidanceSoundFiles(mode: VocalGuidanceMode?, viewModel: FaceTecViewModel) {
+      val currentCustomization = viewModel.getCustomization().value
+
+      if (currentCustomization != null) {
+        currentCustomization.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile =
+          R.raw.please_frame_your_face_sound_file
+        currentCustomization.vocalGuidanceCustomization.pleaseMoveCloserSoundFile =
+          R.raw.please_move_closer_sound_file
+        currentCustomization.vocalGuidanceCustomization.pleaseRetrySoundFile =
+          R.raw.please_retry_sound_file
+        currentCustomization.vocalGuidanceCustomization.uploadingSoundFile =
+          R.raw.uploading_sound_file
+        currentCustomization.vocalGuidanceCustomization.facescanSuccessfulSoundFile =
+          R.raw.facescan_successful_sound_file
+        currentCustomization.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile =
+          R.raw.please_press_button_sound_file
+        currentCustomization.vocalGuidanceCustomization.mode = when (mode) {
+          VocalGuidanceMode.MINIMAL ->
+            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.MINIMAL_VOCAL_GUIDANCE
+          VocalGuidanceMode.FULL ->
+            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.FULL_VOCAL_GUIDANCE
+          else ->
+            FaceTecVocalGuidanceCustomization.VocalGuidanceMode.NO_VOCAL_GUIDANCE
+
+        }
       }
     }
 

@@ -46,8 +46,8 @@ const AndroidFaceTecView = ({
   onStateUpdate,
   vocalGuidanceMode,
   config,
-}: //customization = defaultCustomization,
-Types.FaceTecViewProps) => {
+  customization = defaultCustomization,
+}: Types.FaceTecViewProps) => {
   const ref = useRef(null);
 
   const onUpdate = (event: any) => {
@@ -79,6 +79,7 @@ Types.FaceTecViewProps) => {
         width: PixelRatio.getPixelSizeForLayoutSize(0),
       }}
       vocalGuidanceMode={vocalGuidanceMode}
+      customization={customization}
       onUpdate={onUpdate}
       {...config}
       ref={ref}
@@ -91,6 +92,7 @@ const IOSFaceTecView = ({
   onStateUpdate,
   show,
   vocalGuidanceMode,
+  customization = defaultCustomization,
 }: Types.FaceTecViewProps) => {
   const [showView, setShowView] = useState(false);
 
@@ -124,8 +126,9 @@ const IOSFaceTecView = ({
     <View style={[{ position: 'absolute' }, dimensions]}>
       <FaceTecViewManager
         style={dimensions}
-        vocalGuidanceMode={vocalGuidanceMode}
+        vocalGuidanceMode={vocalGuidanceMode ?? 'off'}
         onUpdate={onUpdate}
+        customization={JSON.stringify(customization)}
         {...config}
       />
     </View>

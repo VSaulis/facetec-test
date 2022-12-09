@@ -4,19 +4,20 @@ import FaceTecSDK
 import AVFoundation
 
 class RNOUtilities: NSObject, FaceTecCustomAnimationDelegate {
-    
-    var vocalGuidanceOnPlayer: AVAudioPlayer!
-    var vocalGuidanceOffPlayer: AVAudioPlayer!
-    static var vocalGuidanceMode: RNOVocalGuidanceMode!
-    static var onUpdate: RCTBubblingEventBlock?
-    
     // Reference to app's main view controller
     let faceTecVC: RNOFaceTecViewController!
-    
-    var currentTheme = RNOConfig.wasSDKConfiguredWithConfigWizard ? "Config Wizard Theme" : "FaceTec Theme"
     var themeTransitionTextTimer: Timer!
-    
     var networkIssueDetected = false
+    var vocalGuidanceOnPlayer: AVAudioPlayer!
+    var vocalGuidanceOffPlayer: AVAudioPlayer!
+    
+    static var vocalGuidanceMode: RNOVocalGuidanceMode!
+    static var onUpdate: RCTBubblingEventBlock?
+    static var bundle: Bundle {
+        let bundle = Bundle.main
+        return Bundle(url: bundle.url(forResource: "RNOFaceTec",
+                                      withExtension: "bundle")!)!
+    }
     
     init(vc: RNOFaceTecViewController) {
         faceTecVC = vc
@@ -55,60 +56,6 @@ class RNOUtilities: NSObject, FaceTecCustomAnimationDelegate {
         DispatchQueue.main.async {
             print(statusString)
         }
-    }
-    
-    func showThemeSelectionMenu() {
-        let themeSelectionMenu = UIAlertController(title: nil, message: "Select a Theme", preferredStyle: .actionSheet)
-        
-        let selectDefaultThemeAction = UIAlertAction(title: "FaceTec Theme", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "FaceTec Theme")
-        }
-        if(RNOConfig.wasSDKConfiguredWithConfigWizard == true) {
-            let selectDevConfigThemeAction = UIAlertAction(title: "Config Wizard Theme", style: .default) {
-                (_) -> Void in self.handleThemeSelection(theme: "Config Wizard Theme")
-            }
-            themeSelectionMenu.addAction(selectDevConfigThemeAction)
-        }
-        let selectPseudoFullscreenThemeAction = UIAlertAction(title: "Pseudo-Fullscreen", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "Pseudo-Fullscreen")
-        }
-        let selectWellRoundedThemeAction = UIAlertAction(title: "Well-Rounded", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "Well-Rounded")
-        }
-        let selectBitcoinExchangeThemeAction = UIAlertAction(title: "Bitcoin Exchange", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "Bitcoin Exchange")
-        }
-        let selectEKYCThemeAction = UIAlertAction(title: "eKYC", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "eKYC")
-        }
-        let selectSampleBankThemeAction = UIAlertAction(title: "Sample Bank", style: .default) {
-            (_) -> Void in self.handleThemeSelection(theme: "Sample Bank")
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        themeSelectionMenu.addAction(selectDefaultThemeAction)
-        themeSelectionMenu.addAction(selectPseudoFullscreenThemeAction)
-        themeSelectionMenu.addAction(selectWellRoundedThemeAction)
-        themeSelectionMenu.addAction(selectBitcoinExchangeThemeAction)
-        themeSelectionMenu.addAction(selectEKYCThemeAction)
-        themeSelectionMenu.addAction(selectSampleBankThemeAction)
-        themeSelectionMenu.addAction(cancelAction)
-        // Must use popover controller for iPad
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if let popoverController = themeSelectionMenu.popoverPresentationController {
-                popoverController.sourceView = faceTecVC.view
-                popoverController.sourceRect = CGRect(x: faceTecVC.view.bounds.midX, y: faceTecVC.view.bounds.midY, width: 0, height: 0)
-                popoverController.permittedArrowDirections = []
-            }
-        }
-        // Remove negative width constraint that causes layout conflict warning -- non-critical unfixed Apple bug
-        for subview in themeSelectionMenu.view.subviews {
-            for constraint in subview.constraints where constraint.debugDescription.contains("width == - 16") {
-                subview.removeConstraint(constraint)
-            }
-        }
-        
-        faceTecVC.present(themeSelectionMenu, animated: true, completion: nil)
     }
     
     func showAuditTrailImages() {
@@ -175,256 +122,21 @@ class RNOUtilities: NSObject, FaceTecCustomAnimationDelegate {
         faceTecVC.view.addSubview(imageView)
     }
     
-    func handleThemeSelection(theme: String) {
-        currentTheme = theme
-        ThemeHelpers.setAppTheme(theme: theme)
-        updateThemeTransitionView()
-        
+    func setUpTheme() {
         // Set this class as the delegate to handle the FaceTecCustomAnimationDelegate methods. This delegate needs to be applied to the current FaceTecCustomization object before starting a new Session in order to use FaceTecCustomAnimationDelegate methods to provide a new instance of a custom UIView that will be displayed for the method-specified animation.
-        if(RNOConfig.currentCustomization.customAnimationDelegate == nil) {
-            RNOConfig.currentCustomization.customAnimationDelegate = self
+        if(RNOConfig.customization!.customAnimationDelegate == nil) {
+            RNOConfig.customization!.customAnimationDelegate = self
             RNOUtilities.setVocalGuidanceSoundFiles()
-            FaceTec.sdk.setCustomization(RNOConfig.currentCustomization)
+            FaceTec.sdk.setCustomization(RNOConfig.customization!)
+            FaceTec.sdk.setLowLightCustomization(RNOConfig.customization!)
+            FaceTec.sdk.setDynamicDimmingCustomization(RNOConfig.customization!)
         }
     }
     
-    func updateThemeTransitionView() {
-        var transitionViewImage: UIImage? = nil
-        var transitionTextColor = RNOConfig.currentCustomization.guidanceCustomization.foregroundColor
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            break
-        case "Well-Rounded":
-            transitionViewImage = UIImage(named: "well_rounded_bg")
-            transitionTextColor = RNOConfig.currentCustomization.frameCustomization.backgroundColor
-            break
-        case "Bitcoin Exchange":
-            transitionViewImage = UIImage(named: "bitcoin_exchange_bg")
-            transitionTextColor = RNOConfig.currentCustomization.frameCustomization.backgroundColor
-            break
-        case "eKYC":
-            transitionViewImage = UIImage(named: "ekyc_bg")
-            break
-        case "Sample Bank":
-            transitionViewImage = UIImage(named: "sample_bank_bg")
-            transitionTextColor = RNOConfig.currentCustomization.frameCustomization.backgroundColor
-            break
-        default:
-            break
-        }
-    }
-    
-    func onCreateNewResultScreenActivityIndicatorView() -> UIView? {
-        var activityIndicatorView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            activityIndicatorView = PseudoFullscreenActivityIndicatorView()
-            break
-        case "Well-Rounded":
-            activityIndicatorView = WellRoundedActivityIndicatorView()
-            break
-        case "Bitcoin Exchange":
-            break
-        case "eKYC":
-            activityIndicatorView = EKYCActvityIndicatorView()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        return activityIndicatorView
-    }
-    
-    func onCreateNFCStartingAnimationView() -> UIView? {
-        return NFCStartingAnimationView()
-    }
-    
-    func onCreateNFCCardStartingAnimationView() -> UIView? {
-        return NFCCardStartingAnimationView()
-    }
-    
-    func onCreateNFCCardScanningAnimationView() -> UIView? {
-        return NFCCardScanningAnimationView()
-    }
-    
-    func onCreateNFCScanningAnimationView() -> UIView? {
-        var scanningAnimationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            scanningAnimationView = NFCScanningAnimationViewBlack()
-            break
-        case "Well-Rounded":
-            scanningAnimationView = NFCScanningAnimationViewGreen()
-            break
-        case "Bitcoin Exchange":
-            break
-        case "eKYC":
-            scanningAnimationView = NFCScanningAnimationViewRed()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        
-        if scanningAnimationView == nil {
-            scanningAnimationView = NFCScanningAnimationView()
-        }
-        
-        return scanningAnimationView
-    }
-    
-    func onCreateNFCSkipOrErrorAnimationView() -> UIView? {
-        var skipOrErrorAnimationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            skipOrErrorAnimationView = PseudoFullscreenUnsuccessView()
-            break
-        case "Well-Rounded":
-            skipOrErrorAnimationView = UIImageView(image: UIImage(named: "warning_green"))
-            break
-        case "Bitcoin Exchange":
-            skipOrErrorAnimationView = UIImageView(image: UIImage(named: "warning_orange"))
-            break
-        case "eKYC":
-            skipOrErrorAnimationView = EKYCUnsuccessView()
-            break
-        case "Sample Bank":
-            skipOrErrorAnimationView = UIImageView(image: UIImage(named: "warning_white"))
-            break
-        default:
-            break
-        }
-        
-        return skipOrErrorAnimationView
-    }
-    
-    func onCreateNewResultScreenSuccessAnimationView() -> UIView? {
-        var successAnimationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            successAnimationView = PseudoFullscreenSuccessView()
-            break
-        case "Well-Rounded":
-            successAnimationView = WellRoundedSuccessView()
-            break
-        case "Bitcoin Exchange":
-            break
-        case "eKYC":
-            successAnimationView = EKYCSuccessView()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        return successAnimationView
-    }
-    
-    func onCreateNewResultScreenUnsuccessAnimationView() -> UIView? {
-        var unsuccessAnimationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            unsuccessAnimationView = PseudoFullscreenUnsuccessView()
-            break
-        case "Well-Rounded":
-            unsuccessAnimationView = WellRoundedUnsuccessView()
-            break
-        case "Bitcoin Exchange":
-            break
-        case "eKYC":
-            unsuccessAnimationView = EKYCUnsuccessView()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        return unsuccessAnimationView
-    }
-    
-    func onCreateAdditionalReviewScreenAnimationView() -> UIView? {
-        var animationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            animationView = AdditionalReviewAnimationView()
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            break
-        case "Well-Rounded":
-            break
-        case "Bitcoin Exchange":
-            animationView = AdditionalReviewAnimationViewOrange()
-            break
-        case "eKYC":
-            animationView = AdditionalReviewAnimationViewRed()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        return animationView
-    }
-    
-    func onCreateInitialLoadingAnimationView() -> UIView? {
-        var animationView: UIView? = nil
-        switch currentTheme {
-        case "FaceTec Theme":
-            break
-        case "Config Wizard Theme":
-            break
-        case "Pseudo-Fullscreen":
-            animationView = PseudoFullscreenActivityIndicatorView()
-            break
-        case "Well-Rounded":
-            animationView = WellRoundedActivityIndicatorView()
-            break
-        case "Bitcoin Exchange":
-            break
-        case "eKYC":
-            animationView = EKYCActvityIndicatorView()
-            break
-        case "Sample Bank":
-            break
-        default:
-            break
-        }
-        return animationView
-    }
     
     func setUpVocalGuidancePlayers() {
-        RNOUtilities.vocalGuidanceMode = .minimal
-        
-        guard let vocalGuidanceOnUrl = Bundle.main.url(forResource: "vocal_guidance_on", withExtension: "mp3") else { return }
-        guard let vocalGuidanceOffUrl = Bundle.main.url(forResource: "vocal_guidance_off", withExtension: "mp3") else { return }
+        guard let vocalGuidanceOnUrl = RNOUtilities.bundle.url(forResource: "vocal_guidance_on", withExtension: "mp3") else { return }
+        guard let vocalGuidanceOffUrl = RNOUtilities.bundle.url(forResource: "vocal_guidance_off", withExtension: "mp3") else { return }
         
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
@@ -437,54 +149,21 @@ class RNOUtilities: NSObject, FaceTecCustomAnimationDelegate {
         }
     }
     
-    func setVocalGuidanceMode() {
-        if !(AVAudioSession.sharedInstance().outputVolume > 0) {
-            let alert = UIAlertController(title: nil, message: "Vocal Guidance is disabled when the device is muted", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-            self.faceTecVC.present(alert, animated: true, completion: nil)
-            return
-        }
-        
-        if vocalGuidanceOnPlayer.isPlaying || vocalGuidanceOffPlayer.isPlaying {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            switch(RNOUtilities.vocalGuidanceMode) {
-            case .off:
-                RNOUtilities.vocalGuidanceMode = .minimal
-                self.vocalGuidanceOnPlayer.play()
-                RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.minimalVocalGuidance
-            case .minimal:
-                RNOUtilities.vocalGuidanceMode = .full;
-                self.vocalGuidanceOnPlayer.play()
-                RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.fullVocalGuidance
-            case .full:
-                RNOUtilities.vocalGuidanceMode = .off;
-                self.vocalGuidanceOffPlayer.play()
-                RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.noVocalGuidance
-            default: break
-            }
-            RNOUtilities.setVocalGuidanceSoundFiles()
-            FaceTec.sdk.setCustomization(RNOConfig.currentCustomization)
-        }
-    }
-    
     public static func setVocalGuidanceSoundFiles() {
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile = Bundle.main.path(forResource: "please_frame_your_face_sound_file", ofType: "mp3") ?? ""
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.pleaseMoveCloserSoundFile = Bundle.main.path(forResource: "please_move_closer_sound_file", ofType: "mp3") ?? ""
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.pleaseRetrySoundFile = Bundle.main.path(forResource: "please_retry_sound_file", ofType: "mp3") ?? ""
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.uploadingSoundFile = Bundle.main.path(forResource: "uploading_sound_file", ofType: "mp3") ?? ""
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.facescanSuccessfulSoundFile = Bundle.main.path(forResource: "facescan_successful_sound_file", ofType: "mp3") ?? ""
-        RNOConfig.currentCustomization.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile = Bundle.main.path(forResource: "please_press_button_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.pleaseFrameYourFaceInTheOvalSoundFile = bundle.path(forResource: "please_frame_your_face_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.pleaseMoveCloserSoundFile = bundle.path(forResource: "please_move_closer_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.pleaseRetrySoundFile = bundle.path(forResource: "please_retry_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.uploadingSoundFile = bundle.path(forResource: "uploading_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.facescanSuccessfulSoundFile = bundle.path(forResource: "facescan_successful_sound_file", ofType: "mp3") ?? ""
+        RNOConfig.customization!.vocalGuidanceCustomization.pleasePressTheButtonToStartSoundFile = bundle.path(forResource: "please_press_button_sound_file", ofType: "mp3") ?? ""
         
         switch(RNOUtilities.vocalGuidanceMode) {
         case .off:
-            RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.noVocalGuidance
+            RNOConfig.customization!.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.noVocalGuidance
         case .minimal:
-            RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.minimalVocalGuidance
+            RNOConfig.customization!.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.minimalVocalGuidance
         case .full:
-            RNOConfig.currentCustomization.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.fullVocalGuidance
+            RNOConfig.customization!.vocalGuidanceCustomization.mode = FaceTecVocalGuidanceMode.fullVocalGuidance
         default: break
         }
     }
@@ -493,7 +172,7 @@ class RNOUtilities: NSObject, FaceTecCustomAnimationDelegate {
         // Set the strings to be used for group names, field names, and placeholder texts for the FaceTec ID Scan User OCR Confirmation Screen.
         // DEVELOPER NOTE: For this demo, we are using the template json file, 'FaceTec_OCR_Customization.json,' as the parameter in calling this API.
         // For the configureOCRLocalization API parameter, you may use any dictionary object that follows the same structure and key naming as the template json file, 'FaceTec_OCR_Customization.json'.
-        if let path = Bundle.main.path(forResource: "FaceTec_OCR_Customization", ofType: "json") {
+        if let path = bundle.path(forResource: "FaceTec_OCR_Customization", ofType: "json") {
             do {
                 let jsonData = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
                 let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: .mutableLeaves)

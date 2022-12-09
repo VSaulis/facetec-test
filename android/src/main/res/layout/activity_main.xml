@@ -1,15 +1,19 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".FaceTecFragment">
+        tools:context=".FaceTecFragment"
+        >
 
         <RelativeLayout
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <LinearLayout
                 android:id="@+id/centeredContent"
@@ -18,26 +22,8 @@
                 android:layout_height="wrap_content"
                 android:weightSum="10"
                 android:gravity="center"
-                android:layout_centerInParent="true">
-            </LinearLayout>
+                android:layout_centerInParent="true"
+                ></LinearLayout>
         </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/themeTransitionImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleX="1.1"
-            android:scaleY="1.1"
-            android:scaleType="centerCrop"
-            android:alpha="0"/>
-        <TextView
-            android:id="@+id/themeTransitionText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="#417FB2"
-            android:alpha="0"
-            android:text="@string/transition_loading_text"
-            />
     </RelativeLayout>
 </layout>

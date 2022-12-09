@@ -7,7 +7,7 @@ import com.facebook.react.uimanager.ViewManager
 
 class FaceTecPackage : ReactPackage {
   override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-    return listOf(FaceTecModule(reactContext))
+    return emptyList()
   }
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {

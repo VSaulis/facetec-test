@@ -373,15 +373,25 @@ const putLivenessCheckResults = async (
   return 'Something went wrong';
 };
 
-const putEnrollmentResults = async (
-  kycId: string,
-  sessionId: string,
-  faceScanBase64: string,
-  auditImagesBase64: Array<string>,
-  lowQualityAuditImagesBase64: Array<string>,
-  sessionUserAgent: string,
-  fullAccessSessionToken: string
-): Promise<string> => {
+type EnrollmentParams = {
+  kycId: string;
+  sessionId: string;
+  faceScanBase64: string;
+  auditImagesBase64: Array<string>;
+  lowQualityAuditImagesBase64: Array<string>;
+  sessionUserAgent: string;
+  fullAccessSessionToken: string;
+};
+
+const putEnrollmentResults = async ({
+  kycId,
+  sessionId,
+  faceScanBase64,
+  auditImagesBase64,
+  lowQualityAuditImagesBase64,
+  sessionUserAgent,
+  fullAccessSessionToken,
+}: EnrollmentParams): Promise<string> => {
   console.log('Putting enrollment results...');
   try {
     const response = await fetch(
@@ -403,6 +413,7 @@ const putEnrollmentResults = async (
     );
 
     console.log(JSON.stringify(response, null, 2));
+    console.log(JSON.stringify(await response.json(), null, 2));
 
     return response.status.toString();
   } catch (error) {
@@ -493,15 +504,15 @@ export default function App() {
 
         setResponse2d(livenessResponse);
 
-        const enrollmentResponse = await putEnrollmentResults(
+        const enrollmentResponse = await putEnrollmentResults({
           kycId,
-          load.sessionId,
-          load.faceScanBase64,
-          load.auditImagesBase64,
-          load.lowQualityAuditTrailImagesBase64,
-          load.userAgent,
-          fullAccessSessionToken
-        );
+          sessionId: load.sessionId,
+          faceScanBase64: load.faceScanBase64,
+          auditImagesBase64: load.auditImagesBase64,
+          lowQualityAuditImagesBase64: load.lowQualityAuditTrailImagesBase64,
+          sessionUserAgent: load.userAgent,
+          fullAccessSessionToken,
+        });
 
         setResponse3d(enrollmentResponse);
       }
