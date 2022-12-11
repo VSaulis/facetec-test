@@ -142,7 +142,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // FaceTec SDK
-  compileOnly files('libs/facetec-sdk-9.6.5-minimal.aar')
+  implementation fileTree(dir: 'facetec-sdk', include: ['*.aar', '*.jar'], exclude: [])
 
   // based on FaceTec example (version 9.6.5)
   implementation 'com.squareup.okhttp3:okhttp:3.12.1'
