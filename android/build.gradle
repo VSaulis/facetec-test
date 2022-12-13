@@ -144,7 +144,7 @@ dependencies {
   // FaceTec SDK
   implementation fileTree(dir: 'facetec-sdk', include: ['*.aar', '*.jar'], exclude: [])
 
-  // based on FaceTec example (version 9.6.5)
+  // based on FaceTec example (version 9.4.15)
   implementation 'com.squareup.okhttp3:okhttp:3.12.1'
   implementation 'com.squareup.okio:okio:1.15.0'
   testImplementation 'junit:junit:4.12'
