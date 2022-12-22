@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.facebook.react.bridge.ReactContext
 import com.facetec.sdk.FaceTecCustomization
-import com.facetec.sdk.FaceTecIDScanResult
-import com.facetec.sdk.FaceTecSessionResult
 
 class FaceTecViewModel : ViewModel() {
   private val vocalGuidanceMode = MutableLiveData<VocalGuidanceMode>()

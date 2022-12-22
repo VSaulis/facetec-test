@@ -7,7 +7,6 @@ package com.reactnativefacetec
 import android.content.Context
 import com.facetec.sdk.FaceTecSDK.InitializeCallback
 import android.util.Log
-import com.facetec.sdk.FaceTecCustomization
 import com.facetec.sdk.FaceTecSDK
 
 object FaceTecConfig {

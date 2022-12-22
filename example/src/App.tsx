@@ -413,7 +413,6 @@ const putEnrollmentResults = async ({
     );
 
     console.log(JSON.stringify(response, null, 2));
-    console.log(JSON.stringify(await response.json(), null, 2));
 
     return response.status.toString();
   } catch (error) {
@@ -496,13 +495,13 @@ export default function App() {
         load?.lowQualityAuditTrailImagesBase64 &&
         fullAccessSessionToken
       ) {
-        const livenessResponse = await putLivenessCheckResults(
+        /*const livenessResponse = await putLivenessCheckResults(
           kycId,
           fullAccessSessionToken,
           load.auditImagesBase64
         );
 
-        setResponse2d(livenessResponse);
+        setResponse2d(livenessResponse);*/
 
         const enrollmentResponse = await putEnrollmentResults({
           kycId,

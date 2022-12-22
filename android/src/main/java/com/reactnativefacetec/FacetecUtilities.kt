@@ -1,20 +1,11 @@
 package com.reactnativefacetec
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.util.Base64
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.ContextThemeWrapper
-import android.view.Window
-import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.react.bridge.Arguments
@@ -27,7 +18,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.util.*
 
 class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
   private var vocalGuidanceOnPlayer: MediaPlayer? = null
