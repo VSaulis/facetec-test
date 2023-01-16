@@ -168,30 +168,6 @@ class FaceTecViewManager(var reactContext: ReactApplicationContext) :
     return result;
   }
 
-  override fun getExportedCustomBubblingEventTypeConstants(): Map<String, Any> {
-    return mapOf(
-      "topChange" to mapOf(
-        "phasedRegistrationNames" to mapOf(
-          "bubbled" to "onChange"
-        )
-      ),
-      "onUpdate" to mapOf(
-        "phasedRegistrationNames" to mapOf(
-          "bubbled" to "onUpdate"
-        )
-      ),
-      "onError" to mapOf(
-        "phasedRegistrationNames" to mapOf(
-          "bubbled" to "onError"
-        )
-      )
-    )
-  }
-
-  override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
-    return super.getExportedCustomDirectEventTypeConstants()
-  }
-
   @ReactProp(name = "vocalGuidanceMode")
   fun setVocalGuidanceMode(view: View, mode: String) {
     viewModel?.setVocalGuidanceMode(

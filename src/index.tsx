@@ -8,6 +8,8 @@ import {
   PixelRatio,
   findNodeHandle,
   View,
+  NativeModules,
+  NativeEventEmitter,
 } from 'react-native';
 import { defaultCustomization } from './customization';
 
@@ -33,6 +35,8 @@ const FaceTecViewManager =
         throw new Error(LINKING_ERROR);
       };
 
+const { FaceTecModule } = NativeModules; // Platform.OS === "android" ? NativeModules : {};
+
 const createFragment = (viewId: number | null) =>
   UIManager.dispatchViewManagerCommand(
     viewId,
@@ -50,16 +54,25 @@ const AndroidFaceTecView = ({
 }: Types.FaceTecViewProps) => {
   const ref = useRef(null);
 
-  const onUpdate = (event: any) => {
-    const { status, message, load } =
-      event?.nativeEvent as Types.FaceTecStateRaw;
-    if (onStateUpdate && status)
-      onStateUpdate({
-        status,
-        message,
-        load: load ? JSON.parse(load) : undefined,
-      });
-  };
+  useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(FaceTecModule);
+
+    const eventListener = eventEmitter.addListener('onUpdate', (event) => {
+      const { status, message, load } = event as Types.FaceTecStateRaw;
+      if (onStateUpdate && status)
+        onStateUpdate({
+          status,
+          message,
+          load: load ? JSON.parse(load) : undefined,
+        });
+    });
+
+    return () => {
+      if (eventListener) {
+        eventListener.remove();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (show) {
@@ -80,7 +93,6 @@ const AndroidFaceTecView = ({
       }}
       vocalGuidanceMode={vocalGuidanceMode}
       customization={customization}
-      onUpdate={onUpdate}
       {...config}
       ref={ref}
     />

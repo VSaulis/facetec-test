@@ -6,6 +6,7 @@ import {
   Pressable,
   Text,
   Platform,
+  Switch,
 } from 'react-native';
 import {
   FaceTecConfig,
@@ -13,13 +14,6 @@ import {
   FaceTecState,
   FaceTecLoad,
 } from 'react-native-facetec';
-
-const formatMultilineKey = (key: string) =>
-  key
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .join('\n');
 
 const CLIENT_ID = 'idv.demo.api@ondato.com';
 const CLIENT_SECRET =
@@ -472,6 +466,7 @@ export default function App() {
   const [state, setState] = useState<FaceTecState>();
   const [response2d, setResponse2d] = useState<string>();
   const [response3d, setResponse3d] = useState<string>();
+  const [is3dEnabled, setIs3dEnabled] = useState<boolean>(false);
 
   const [identityVerificationId, setIdentityVerificationId] =
     useState<string>();
@@ -495,25 +490,27 @@ export default function App() {
         load?.lowQualityAuditTrailImagesBase64 &&
         fullAccessSessionToken
       ) {
-        /*const livenessResponse = await putLivenessCheckResults(
-          kycId,
-          fullAccessSessionToken,
-          load.auditImagesBase64
-        );
+        if (is3dEnabled) {
+          const enrollmentResponse = await putEnrollmentResults({
+            kycId,
+            sessionId: load.sessionId,
+            faceScanBase64: load.faceScanBase64,
+            auditImagesBase64: load.auditImagesBase64,
+            lowQualityAuditImagesBase64: load.lowQualityAuditTrailImagesBase64,
+            sessionUserAgent: load.userAgent,
+            fullAccessSessionToken,
+          });
 
-        setResponse2d(livenessResponse);*/
+          setResponse3d(enrollmentResponse);
+        } else {
+          const livenessResponse = await putLivenessCheckResults(
+            kycId,
+            fullAccessSessionToken,
+            load.auditImagesBase64
+          );
 
-        const enrollmentResponse = await putEnrollmentResults({
-          kycId,
-          sessionId: load.sessionId,
-          faceScanBase64: load.faceScanBase64,
-          auditImagesBase64: load.auditImagesBase64,
-          lowQualityAuditImagesBase64: load.lowQualityAuditTrailImagesBase64,
-          sessionUserAgent: load.userAgent,
-          fullAccessSessionToken,
-        });
-
-        setResponse3d(enrollmentResponse);
+          setResponse2d(livenessResponse);
+        }
       }
     };
 
@@ -612,6 +609,8 @@ export default function App() {
     getCredentials();
   }, []);
 
+  console.log(configuration);
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.credentials}>
@@ -649,18 +648,59 @@ export default function App() {
       >
         <Text style={styles.buttonText}>Start</Text>
       </Pressable>
-      <View style={styles.response}>
-        <Text style={styles.title}>
-          {'/v1/kyc-identifications/{id}/face-tec-liveness-2d'}
-        </Text>
-        <Text style={styles.value}>{JSON.stringify(response2d, null, 2)}</Text>
+      <View style={styles.modeSelectionContainer}>
+        <View
+          style={[
+            styles.modeTextContainer,
+            !is3dEnabled && styles.modeSelectedTextContainer,
+          ]}
+        >
+          <Text
+            style={[styles.modeText, !is3dEnabled && styles.modeSelectedText]}
+          >
+            2D Mode
+          </Text>
+        </View>
+        <Switch
+          trackColor={{ false: '#767577', true: '#767577' }}
+          ios_backgroundColor="#767577"
+          onValueChange={() => setIs3dEnabled(!is3dEnabled)}
+          value={is3dEnabled}
+          style={styles.modeSwitch}
+        />
+        <View
+          style={[
+            styles.modeTextContainer,
+            is3dEnabled && styles.modeSelectedTextContainer,
+          ]}
+        >
+          <Text
+            style={[styles.modeText, is3dEnabled && styles.modeSelectedText]}
+          >
+            3D Mode
+          </Text>
+        </View>
       </View>
-      <View style={styles.response}>
-        <Text style={styles.title}>
-          {'/v1/kyc-identifications/{id}/face-tec-enrollment-3d'}
-        </Text>
-        <Text style={styles.value}>{JSON.stringify(response3d, null, 2)}</Text>
-      </View>
+      {response2d && (
+        <View style={styles.response}>
+          <Text style={styles.title}>
+            {'/v1/kyc-identifications/{id}/face-tec-liveness-2d'}
+          </Text>
+          <Text style={styles.value}>
+            {JSON.stringify(response2d, null, 2)}
+          </Text>
+        </View>
+      )}
+      {response3d && (
+        <View style={styles.response}>
+          <Text style={styles.title}>
+            {'/v1/kyc-identifications/{id}/face-tec-enrollment-3d'}
+          </Text>
+          <Text style={styles.value}>
+            {JSON.stringify(response3d, null, 2)}
+          </Text>
+        </View>
+      )}
 
       {configuration && (
         <FaceTecView
@@ -703,16 +743,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     marginVertical: 20,
-    backgroundColor: 'orange',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#fd5a28',
+    height: 60,
+    borderRadius: 30,
   },
   disabledButton: {
     opacity: 0.3,
   },
   buttonText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '400',
+    color: '#FFF',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  modeSelectionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modeSwitch: {
+    marginHorizontal: 16,
+  },
+  modeTextContainer: {
+    height: 31,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  modeSelectedTextContainer: {
+    backgroundColor: '#fd5a28',
+  },
+  modeText: {},
+  modeSelectedText: {
+    color: '#fff',
   },
 
   response: {},

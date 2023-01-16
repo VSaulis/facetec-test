@@ -33,7 +33,7 @@ export const defaultCustomization: Types.Customization = {
     buttonBackgroundDisabledColor: '#FAB2A5',
     buttonBorderColor: undefined,
     buttonBorderWidth: -1,
-    buttonCornerRadius: -1,
+    buttonCornerRadius: 50,
   },
 
   faceTecIDScanCustomization: {
@@ -73,7 +73,7 @@ export const defaultCustomization: Types.Customization = {
     buttonBackgroundDisabledColor: '#FAB2A5',
     buttonBorderColor: undefined,
     buttonBorderWidth: -1,
-    buttonCornerRadius: -1,
+    buttonCornerRadius: 40,
 
     customNFCStartingAnimation: 0,
     customNFCScanningAnimation: 0,
@@ -155,15 +155,15 @@ export const defaultCustomization: Types.Customization = {
   },
 
   faceTecFrameCustomization: {
-    borderWidth: 0,
-    cornerRadius: 0,
+    borderWidth: undefined,
+    cornerRadius: undefined,
     borderColor: '#ffffff',
     backgroundColor: '#ffffff',
-    elevation: 0,
+    elevation: undefined,
   },
 
   faceTecFeedbackCustomization: {
-    cornerRadius: undefined,
+    cornerRadius: 50,
     backgroundColors: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'],
     textColor: '#000000',
     textFont: null,
@@ -172,12 +172,12 @@ export const defaultCustomization: Types.Customization = {
   },
 
   faceTecOvalCustomization: {
-    strokeWidth: 6,
-    strokeColor: '#ABABAB',
-    progressStrokeWidth: 6,
+    strokeWidth: 0,
+    strokeColor: '#FFFFFFFF',
+    progressStrokeWidth: 0,
     progressColor1: '#fd5a28',
     progressColor2: '#fd5a28',
-    progressRadialOffset: 12,
+    progressRadialOffset: 0,
   },
 
   faceTecCancelButtonCustomization: {

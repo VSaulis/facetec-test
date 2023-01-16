@@ -44,24 +44,8 @@ class FaceTecUtilities(private val facetecFragment: FaceTecFragment) {
     if (state.load != null)
       data.putString("load", state.load)
 
-    sendDataToJS(data)
-  }
 
-  private fun sendDataToJS(data: WritableMap) {
-    facetecFragment.id.let {
-      viewModel.getReactContext().value?.getJSModule(RCTEventEmitter::class.java)
-        ?.receiveEvent(it, "onUpdate", data)
-    }
-  }
-
-  fun sendExceptionToJS(errorCode: String, errorMessage: String) {
-    val data: WritableMap = Arguments.createMap()
-    data.putString("errorCode", errorCode)
-    data.putString("errorMessage", errorMessage)
-
-    val reactContext = viewModel.getReactContext().value as ReactContext?
-    reactContext?.getJSModule(RCTEventEmitter::class.java)
-      ?.receiveEvent(facetecFragment.id, "onError", data)
+    viewModel.getReactContext().value?.let { FaceTecModule.sendEvent(it, "onUpdate", data) }
   }
 
   fun fadeInMainUI() {
